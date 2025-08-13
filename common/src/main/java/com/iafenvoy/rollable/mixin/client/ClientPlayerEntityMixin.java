@@ -24,16 +24,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         super(world, profile);
     }
 
-    @Inject(
-            method = "tickMovement",
-            at = @At("RETURN")
-    )
+    @Inject(method = "tickMovement", at = @At("RETURN"))
     public void doABarrelRoll$resetJump(CallbackInfo ci) {
         if (this.isOnGround()) {
             MixinHooks.secondJump = false;
             MixinHooks.thirdJump = false;
         }
-
         MixinHooks.wasJumping = this.input.jumping;
     }
 }

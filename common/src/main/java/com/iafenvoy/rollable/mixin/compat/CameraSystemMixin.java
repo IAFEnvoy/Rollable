@@ -1,7 +1,7 @@
-package com.iafenvoy.rollable.fabric.compat.cameraoverhaul.mixin;
+package com.iafenvoy.rollable.mixin.compat;
 
-import net.minecraft.client.MinecraftClient;
 import com.iafenvoy.rollable.api.RollEntity;
+import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -25,7 +25,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float doABarrelRoll$cancelVerticalVelocityPitchOffset(float original) {
-        return allowModifications() ? original : 0f;
+        return this.allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -38,7 +38,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float doABarrelRoll$cancelForwardVelocityPitchOffset(float original) {
-        return allowModifications() ? original : 0f;
+        return this.allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -51,7 +51,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float doABarrelRoll$cancelYawDeltaRollOffset(float original) {
-        return allowModifications() ? original : 0f;
+        return this.allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -64,6 +64,6 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float doABarrelRoll$cancelStrafingRollOffset(float original) {
-        return allowModifications() ? original : 0f;
+        return this.allowModifications() ? original : 0f;
     }
 }

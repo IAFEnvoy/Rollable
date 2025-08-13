@@ -1,18 +1,15 @@
 package com.iafenvoy.rollable.flight;
 
-import com.iafenvoy.rollable.DoABarrelRoll;
-import com.iafenvoy.rollable.DoABarrelRollClient;
 import com.iafenvoy.rollable.ModKeybindings;
+import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.api.event.RollContext;
 import com.iafenvoy.rollable.api.rotation.RotationInstant;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.math.Expression;
-import com.iafenvoy.rollable.math.MagicNumbers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.SmoothUtil;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
@@ -46,7 +43,7 @@ public class RotationModifiers {
     public static RotationInstant banking(RotationInstant rotationInstant, RollContext context) {
         double delta = context.getRenderDelta();
         RotationInstant currentRotation = context.getCurrentRotation();
-        double currentRoll = currentRotation.roll() * MagicNumbers.TORAD;
+        double currentRoll = Math.toRadians(currentRotation.roll());
 
         Expression xExpression = RollableClientConfig.INSTANCE.advanced.bankingXFormula.getValue().getCompiledOrDefaulting(0);
         Expression yExpression = RollableClientConfig.INSTANCE.advanced.bankingYFormula.getValue().getCompiledOrDefaulting(0);
@@ -66,7 +63,7 @@ public class RotationModifiers {
 
     public static RotationInstant reorient(RotationInstant rotationInstant, RollContext context) {
         double delta = context.getRenderDelta();
-        double currentRoll = context.getCurrentRotation().roll() * MagicNumbers.TORAD;
+        double currentRoll = Math.toRadians(context.getCurrentRotation().roll());
         double strength = 10 * RollableClientConfig.INSTANCE.banking.rightingStrength.getValue();
 
         double cutoff = ROLL_REORIENT_CUTOFF;
@@ -78,35 +75,19 @@ public class RotationModifiers {
         return rotationInstant.add(0, 0, -rollDelta * strength * delta);
     }
 
-    public static RotationInstant manageThrottle(RotationInstant rotationInstant, RollContext context) {
-        double delta = context.getRenderDelta();
-
-        if (ModKeybindings.THRUST_FORWARD.isPressed()) {
-            DoABarrelRollClient.throttle += 0.1 * delta;
-        } else if (ModKeybindings.THRUST_BACKWARD.isPressed()) {
-            DoABarrelRollClient.throttle -= 0.1 * delta;
-        } else {
-            DoABarrelRollClient.throttle -= DoABarrelRollClient.throttle * 0.95 * delta;
-        }
-
-        DoABarrelRollClient.throttle = MathHelper.clamp(DoABarrelRollClient.throttle, 0, RollableClientConfig.INSTANCE.thrust.max.getValue());
-
-        return rotationInstant;
-    }
-
     public static RollContext.ConfiguresRotation fixNaN(String name) {
         return (rotationInstant, context) -> {
             if (Double.isNaN(rotationInstant.pitch())) {
                 rotationInstant = RotationInstant.of(0, rotationInstant.yaw(), rotationInstant.roll());
-                DoABarrelRoll.LOGGER.warn("NaN found in pitch for " + name + ", setting to 0 as fallback");
+                Rollable.LOGGER.warn("NaN found in pitch for {}, setting to 0 as fallback", name);
             }
             if (Double.isNaN(rotationInstant.yaw())) {
                 rotationInstant = RotationInstant.of(rotationInstant.pitch(), 0, rotationInstant.roll());
-                DoABarrelRoll.LOGGER.warn("NaN found in yaw for " + name + ", setting to 0 as fallback");
+                Rollable.LOGGER.warn("NaN found in yaw for {}, setting to 0 as fallback", name);
             }
             if (Double.isNaN(rotationInstant.roll())) {
                 rotationInstant = RotationInstant.of(rotationInstant.pitch(), rotationInstant.yaw(), 0);
-                DoABarrelRoll.LOGGER.warn("NaN found in roll for " + name + ", setting to 0 as fallback");
+                Rollable.LOGGER.warn("NaN found in roll for {}, setting to 0 as fallback", name);
             }
             return rotationInstant;
         };

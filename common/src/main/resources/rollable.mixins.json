@@ -5,21 +5,17 @@
   "minVersion": "0.8",
   "client": [
     "client.ClientPlayerEntityMixin",
-    "client.InGameHudMixin",
+    "client.PlayerEntityMixin",
     "client.key.KeyBindingEntryMixin",
     "client.key.KeyBindingMixin",
-    "client.roll.DebugHudMixin",
+    "client.roll.CameraMixin",
     "client.roll.GameRendererMixin",
     "client.roll.MouseMixin",
     "client.roll.PlayerEntityRendererMixin",
-    "client.roll.entity.ClientPlayerEntityMixin",
-    "client.LivingEntityMixin",
-    "client.PlayerEntityMixin",
-    "client.roll.CameraMixin"
+    "client.roll.entity.ClientPlayerEntityMixin"
   ],
   "mixins": [
-    "MinecraftServerMixin",
-    "roll.EntityTrackerEntryMixin",
+    "compat.CameraSystemMixin",
     "roll.entity.EntityMixin",
     "roll.entity.LivingEntityMixin",
     "roll.entity.PlayerEntityMixin"

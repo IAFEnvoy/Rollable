@@ -32,17 +32,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     private void doABarrelRoll$interceptFallFlyingStart(CallbackInfoReturnable<Boolean> cir) {
         // We do the same checks the original method does, but leave out the one about already fallFlying.
         // This is needed for the hybrid mode.
-        if (this.isOnGround() || this.isTouchingWater() || this.hasStatusEffect(StatusEffects.LEVITATION)) {
-            return;
-        }
+        if (this.isOnGround() || this.isTouchingWater() || this.hasStatusEffect(StatusEffects.LEVITATION)) return;
 
         ActivationBehaviour behaviour = (ActivationBehaviour) RollableClientConfig.INSTANCE.generals.activationBehaviour.getValue();
-
-        if ((((PlayerEntity) (Object) this) instanceof ClientPlayerEntity)
-                && (behaviour == ActivationBehaviour.TRIPLE_JUMP
-                || behaviour == ActivationBehaviour.HYBRID
-                || behaviour == ActivationBehaviour.HYBRID_TOGGLE)) {
-
+        if (((PlayerEntity) (Object) this) instanceof ClientPlayerEntity && behaviour != ActivationBehaviour.VANILLA) {
             boolean shouldCancel = behaviour == ActivationBehaviour.TRIPLE_JUMP;
 
             // This code is only reached if the player is currently jumping,
@@ -57,9 +50,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     MixinHooks.thirdJump = behaviour != ActivationBehaviour.HYBRID_TOGGLE || !MixinHooks.thirdJump;
                 }
                 // Reaching this point is the only way for the function to progress, activating the Elytra.
-            } else {
-                if (shouldCancel) cir.setReturnValue(false);
-            }
+            } else if (shouldCancel) cir.setReturnValue(false);
         }
     }
 }

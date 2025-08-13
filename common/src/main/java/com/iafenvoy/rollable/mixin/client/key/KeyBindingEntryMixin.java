@@ -22,13 +22,7 @@ public abstract class KeyBindingEntryMixin {
     @Final
     private KeyBinding binding;
 
-    @ModifyExpressionValue(
-            method = "update",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/option/KeyBinding;equals(Lnet/minecraft/client/option/KeyBinding;)Z"
-            )
-    )
+    @ModifyExpressionValue(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;equals(Lnet/minecraft/client/option/KeyBinding;)Z"))
     private boolean doABarrelRoll$ignoreCertainKeyBindingConflicts(boolean original, @Local KeyBinding otherBinding) {
         List<InputContext> firstContexts = ((ContextualKeyBinding) this.binding).doABarrelRoll$getContexts();
         List<InputContext> secondContexts = ((ContextualKeyBinding) otherBinding).doABarrelRoll$getContexts();

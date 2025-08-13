@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.math;
 
-import com.iafenvoy.rollable.DoABarrelRoll;
+import com.iafenvoy.rollable.Rollable;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -13,78 +13,78 @@ public class SyntaxHighlighter {
         MutableText formattedText = Text.literal("");
         SyntaxHighlightContext context = new SyntaxHighlightContext(text);
 
-        if (debugLog) DoABarrelRoll.LOGGER.info("Begun syntax highlighting");
+        if (debugLog) Rollable.LOGGER.info("Begun syntax highlighting");
 
         while (context.getCurrent() != (char) 0) {
             if (context.getCurrent() == '$') { //variables
                 formattedText.append(String.valueOf(context.getCurrent()));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Begun coloring variable");
+                if (debugLog) Rollable.LOGGER.info("Begun coloring variable");
 
                 while (isLetter(context.getCurrent()) || context.getCurrent() == '_') {
                     formattedText.append(formatText(context.getCurrent(), SyntaxType.Variable));
                     context.position++;
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring variable");
+                    if (debugLog) Rollable.LOGGER.info("Coloring variable");
                 }
             } else if (context.getCurrent() == '-' || context.getCurrent() == '+') { //unary operators
                 if (Character.isDigit(context.peek()) && context.lastIsNotValue()) {
                     formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
                     context.position++;
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
+                    if (debugLog) Rollable.LOGGER.info("Coloring number");
                 } else if (isLetter(context.peek()) && context.lastIsNotValue()) {
                     formattedText.append(formatText(context.getCurrent(), SyntaxType.Function));
                     context.position++;
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring function");
+                    if (debugLog) Rollable.LOGGER.info("Coloring function");
                 } else {
                     formattedText.append(formatText(context.getCurrent(), SyntaxType.Operator));
                     context.position++;
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring operator");
+                    if (debugLog) Rollable.LOGGER.info("Coloring operator");
                 }
             } else if (Character.isDigit(context.getCurrent()) || context.getCurrent() == '.') { //numbers
                 formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
+                if (debugLog) Rollable.LOGGER.info("Coloring number");
             } else if (isLetter(context.getCurrent())) { //functions and constants
                 StringBuilder builder = new StringBuilder();
 
                 while (isLetter(context.getCurrent()) || context.getCurrent() == '_') {
                     builder.append(context.getCurrent());
                     context.position++;
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Reading possible function or constant");
+                    if (debugLog) Rollable.LOGGER.info("Reading possible function or constant");
                 }
 
                 String builtResult = builder.toString();
 
                 if (isKeyword(builtResult) && context.getCurrent() == '(') {
                     formattedText.append(formatText(builtResult, SyntaxType.Function));
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring function");
+                    if (debugLog) Rollable.LOGGER.info("Coloring function");
                 } else if (isConstant(builtResult)) {
                     formattedText.append(formatText(builtResult, SyntaxType.Constant));
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring constant");
+                    if (debugLog) Rollable.LOGGER.info("Coloring constant");
                 } else {
                     formattedText.append(formatText(builtResult, SyntaxType.Error));
-                    if (debugLog) DoABarrelRoll.LOGGER.info("Coloring error");
+                    if (debugLog) Rollable.LOGGER.info("Coloring error");
                 }
             } else if (isOperator(context.getCurrent())) { //typical operators
                 formattedText.append(formatText(context.getCurrent(), SyntaxType.Operator));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Coloring operator");
+                if (debugLog) Rollable.LOGGER.info("Coloring operator");
             } else if (isScope(context.getCurrent())) { //parentheses
                 formattedText.append(formatText(context.getCurrent(), SyntaxType.Scope));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Skipping parentheses");
+                if (debugLog) Rollable.LOGGER.info("Skipping parentheses");
             } else if (Character.isWhitespace(context.getCurrent())) { //whitespace
                 formattedText.append(String.valueOf(context.getCurrent()));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Skipping whitespace");
+                if (debugLog) Rollable.LOGGER.info("Skipping whitespace");
             } else { //errors
                 formattedText.append(formatText(context.getCurrent(), SyntaxType.Error));
                 context.position++;
-                if (debugLog) DoABarrelRoll.LOGGER.info("Coloring errors");
+                if (debugLog) Rollable.LOGGER.info("Coloring errors");
             }
         }
 
-        if (debugLog) DoABarrelRoll.LOGGER.info("Finished syntax coloring");
+        if (debugLog) Rollable.LOGGER.info("Finished syntax coloring");
         return formattedText;
     }
 

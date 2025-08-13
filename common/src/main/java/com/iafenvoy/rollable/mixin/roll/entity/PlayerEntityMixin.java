@@ -48,9 +48,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 
     @Override
     public float doABarrelRoll$getRoll(float tickDelta) {
-        if (tickDelta == 1.0f) {
-            return this.doABarrelRoll$getRoll();
-        }
+        if (tickDelta == 1.0f) return this.doABarrelRoll$getRoll();
         return MathHelper.lerp(tickDelta, this.prevRoll, this.doABarrelRoll$getRoll());
     }
 

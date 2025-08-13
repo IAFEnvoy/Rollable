@@ -21,14 +21,7 @@ public abstract class GameRendererMixin {
     @Final
     private Camera camera;
 
-    @Inject(
-            method = "renderWorld",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;",
-                    ordinal = 2
-            )
-    )
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 2))
     public void doABarrelRoll$renderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
         matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(((RollCamera) this.camera).doABarrelRoll$getRoll()));
     }

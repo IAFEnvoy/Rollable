@@ -4,7 +4,7 @@ import com.iafenvoy.jupiter.config.entry.DoubleEntry;
 import com.iafenvoy.jupiter.render.screen.WidgetBuilderManager;
 import com.iafenvoy.jupiter.render.screen.dialog.Dialog;
 import com.iafenvoy.jupiter.render.widget.WidgetBuilder;
-import com.iafenvoy.rollable.DoABarrelRoll;
+import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.config.entry.SensitivityEntry;
 import net.fabricmc.api.EnvType;
@@ -32,7 +32,7 @@ public class SensitivityDialog extends Dialog<Sensitivity> {
     }
 
     private void createEntry(String key, double value, double defaultValue, int index) {
-        String t = "config.%s.sensitivity.%s".formatted(DoABarrelRoll.MOD_ID, key);
+        String t = "config.%s.sensitivity.%s".formatted(Rollable.MOD_ID, key);
         DoubleEntry entry = new DoubleEntry(t, defaultValue);
         entry.setValue(value);
         WidgetBuilder<Double> builder = WidgetBuilderManager.get(entry);

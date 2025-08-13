@@ -5,7 +5,6 @@ import com.iafenvoy.rollable.api.event.RollEvents;
 import com.iafenvoy.rollable.api.rotation.RotationInstant;
 import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.flight.RotationModifiers;
-import com.iafenvoy.rollable.math.MagicNumbers;
 import com.iafenvoy.rollable.mixin.roll.entity.PlayerEntityMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,9 +13,6 @@ import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayerEntity.class)
@@ -26,28 +22,9 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow
     public float lastRenderYaw;
 
-    @Unique
-    private boolean lastSentIsRolling;
-    @Unique
-    private float lastSentRoll;
-
-    @Inject(
-            method = "sendMovementPackets",
-            at = @At("TAIL")
-    )
-    private void doABarrelRoll$sendRollPacket(CallbackInfo ci) {
-        boolean isRolling = this.doABarrelRoll$isRolling();
-        float rollDiff = this.doABarrelRoll$getRoll() - this.lastSentRoll;
-        if (isRolling != this.lastSentIsRolling || rollDiff != 0.0f) {
-            this.lastSentIsRolling = isRolling;
-            this.lastSentRoll = this.doABarrelRoll$getRoll();
-        }
-    }
-
     @Override
     @Unique
     protected void doABarrelRoll$baseTickTail2() {
-        // Update rolling status
         this.doABarrelRoll$setRolling(RollEvents.shouldRoll());
     }
 
@@ -84,29 +61,29 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
         // Convert pitch, yaw, and roll to a facing and left vector
         Vector3d facing = new Vector3d(this.getRotationVecClient().toVector3f());
         Vector3d left = new Vector3d(1, 0, 0);
-        left.rotateZ(-currentRoll * MagicNumbers.TORAD);
-        left.rotateX(-currentPitch * MagicNumbers.TORAD);
-        left.rotateY(-(currentYaw + 180) * MagicNumbers.TORAD);
+        left.rotateZ(-Math.toRadians(currentRoll));
+        left.rotateX(-Math.toRadians(currentPitch));
+        left.rotateY(-Math.toRadians(currentYaw + 180));
 
 
         // Apply pitch
-        facing.rotateAxis(-0.15 * pitch * MagicNumbers.TORAD, left.x, left.y, left.z);
+        facing.rotateAxis(-0.15 * Math.toRadians(pitch), left.x, left.y, left.z);
 
         // Apply yaw
         Vector3d up = facing.cross(left, new Vector3d());
-        facing.rotateAxis(0.15 * yaw * MagicNumbers.TORAD, up.x, up.y, up.z);
-        left.rotateAxis(0.15 * yaw * MagicNumbers.TORAD, up.x, up.y, up.z);
+        facing.rotateAxis(0.15 * Math.toRadians(yaw), up.x, up.y, up.z);
+        left.rotateAxis(0.15 * Math.toRadians(yaw), up.x, up.y, up.z);
 
         // Apply roll
-        left.rotateAxis(0.15 * roll * MagicNumbers.TORAD, facing.x, facing.y, facing.z);
+        left.rotateAxis(0.15 * Math.toRadians(roll), facing.x, facing.y, facing.z);
 
 
         // Extract new pitch, yaw, and roll
-        double newPitch = -Math.asin(facing.y) * MagicNumbers.TODEG;
-        double newYaw = -Math.atan2(facing.x, facing.z) * MagicNumbers.TODEG;
+        double newPitch = Math.toDegrees(-Math.asin(facing.y));
+        double newYaw = Math.toDegrees(-Math.atan2(facing.x, facing.z));
 
-        Vector3d normalLeft = new Vector3d(1, 0, 0).rotateY(-(newYaw + 180) * MagicNumbers.TORAD);
-        double newRoll = -Math.atan2(left.cross(normalLeft, new Vector3d()).dot(facing), left.dot(normalLeft)) * MagicNumbers.TODEG;
+        Vector3d normalLeft = new Vector3d(1, 0, 0).rotateY(Math.toRadians(-newYaw - 180));
+        double newRoll = Math.toDegrees(-Math.atan2(left.cross(normalLeft, new Vector3d()).dot(facing), left.dot(normalLeft)));
 
         // Calculate deltas
         double deltaY = newPitch - currentPitch;

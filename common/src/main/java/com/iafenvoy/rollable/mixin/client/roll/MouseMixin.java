@@ -33,42 +33,20 @@ public abstract class MouseMixin implements RollMouse {
     @Unique
     private final Vector2d mouseTurnVec = new Vector2d();
 
-    @ModifyVariable(
-            method = "updateMouse",
-            index = 3,
-            at = @At(
-                    value = "STORE",
-                    ordinal = 0
-            )
-    )
+    @ModifyVariable(method = "updateMouse", index = 3, at = @At(value = "STORE", ordinal = 0))
     private double doABarrelRoll$captureDelta(double original, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
-        if (this.lastMouseUpdateTime != Double.MIN_VALUE) {
-            mouseDeltaRef.set(original);
-        }
-
+        if (this.lastMouseUpdateTime != Double.MIN_VALUE) mouseDeltaRef.set(original);
         return original;
     }
 
-    @Inject(
-            method = "updateMouse",
-            at = @At(
-                    value = "RETURN",
-                    ordinal = 0
-            )
-    )
+    @Inject(method = "updateMouse", at = @At(value = "RETURN", ordinal = 0))
     private void doABarrelRoll$maintainMouseMomentum(CallbackInfo ci, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
         if (this.client.player != null && !this.client.isPaused()) {
             this.doABarrelRoll$updateMouse(this.client.player, 0, 0, mouseDeltaRef.get());
         }
     }
 
-    @WrapWithCondition(
-            method = "updateMouse",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"
-            )
-    )
+    @WrapWithCondition(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
     private boolean doABarrelRoll$changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
         return !this.doABarrelRoll$updateMouse(player, cursorDeltaX, cursorDeltaY, mouseDeltaRef.get());
     }
@@ -108,10 +86,5 @@ public abstract class MouseMixin implements RollMouse {
 
         this.mouseTurnVec.zero();
         return false;
-    }
-
-    @Override
-    public Vector2d doABarrelRoll$getMouseTurnVec() {
-        return this.mouseTurnVec;
     }
 }

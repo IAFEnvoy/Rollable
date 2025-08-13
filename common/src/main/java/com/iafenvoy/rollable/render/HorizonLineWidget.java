@@ -1,7 +1,6 @@
 package com.iafenvoy.rollable.render;
 
 import com.iafenvoy.rollable.ModMath;
-import com.iafenvoy.rollable.math.MagicNumbers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.GameRenderer;
@@ -12,7 +11,7 @@ public class HorizonLineWidget extends RenderHelper {
     public static void render(MatrixStack matrices, int scaledWidth, int scaledHeight, double roll, double pitch) {
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2 - 1;
-        roll *= -MagicNumbers.TORAD;
+        roll = Math.toRadians(roll);
 
         Vector2d v = new Vector2d(Math.cos(roll), Math.sin(roll));
         Vector2d offset = new Vector2d(v).perpendicular().mul(pitch * scaledHeight * 0.007);

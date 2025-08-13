@@ -13,19 +13,16 @@
   },
   "license": "CC0-1.0",
   "icon": "assets/rollable/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "com.iafenvoy.rollable.fabric.DoABarrelRollFabric"
-    ],
     "client": [
-      "com.iafenvoy.rollable.fabric.DoABarrelRollFabricClient"
+      "com.iafenvoy.rollable.fabric.RollableFabricClient"
     ],
     "modmenu": [
-      "com.iafenvoy.rollable.fabric.compat.modmenu.ModMenuIntegration"
+      "com.iafenvoy.rollable.fabric.compat.ModMenu"
     ],
     "controlify": [
-      "com.iafenvoy.rollable.fabric.compat.controlify.ControlifyCompat"
+      "com.iafenvoy.rollable.fabric.compat.Controlify"
     ]
   },
   "mixins": [

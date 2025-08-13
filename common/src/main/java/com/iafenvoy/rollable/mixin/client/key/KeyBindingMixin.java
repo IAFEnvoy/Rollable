@@ -39,73 +39,39 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
     private static KeyBinding getContextKeyBinding(InputUtil.Key key) {
         for (InputContextImpl context : InputContextImpl.getContexts()) {
             KeyBinding binding = context.getKeyBinding(key);
-            if (binding != null) {
-                if (context.isActive()) {
-                    return binding;
-                } else {
-                    binding.setPressed(false);
-                }
-            }
+            if (binding != null)
+                if (context.isActive()) return binding;
+                else binding.setPressed(false);
         }
-
         return null;
     }
 
-    @WrapOperation(
-            method = "onKeyPressed",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
-            ),
-            require = 0 // We let all these mixins fail if they need to as a temporary workaround to be compatible with Connector.
-    )
+    @WrapOperation(method = "onKeyPressed", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
     private static Object doABarrelRoll$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         KeyBinding binding = getContextKeyBinding((InputUtil.Key) key);
         if (binding != null) return binding;
-
         return original.call(map, key);
     }
 
-    @WrapOperation(
-            method = "setKeyPressed",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
-            ),
-            require = 0
-    )
+    @WrapOperation(method = "setKeyPressed", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
     private static Object doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         KeyBinding binding = getContextKeyBinding((InputUtil.Key) key);
         KeyBinding originalBinding = original.call(map, key);
         if (binding != null) {
-            if (originalBinding != null) {
+            if (originalBinding != null)
                 originalBinding.setPressed(false);
-            }
             return binding;
         }
-
         return originalBinding;
     }
 
-    @Inject(
-            method = "updateKeysByCode",
-            at = @At("HEAD"),
-            require = 0
-    )
+    @Inject(method = "updateKeysByCode", at = @At("HEAD"), require = 0)
     private static void doABarrelRoll$updateContextualKeys(CallbackInfo ci) {
-        for (InputContextImpl context : InputContextImpl.getContexts()) {
+        for (InputContextImpl context : InputContextImpl.getContexts())
             context.updateKeysByCode();
-        }
     }
 
-    @WrapWithCondition(
-            method = "updateKeysByCode",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
-            ),
-            require = 0
-    )
+    @WrapWithCondition(method = "updateKeysByCode", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
     private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
         return !InputContextImpl.contextsContain((KeyBinding) keyBinding);
     }

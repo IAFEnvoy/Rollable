@@ -38,7 +38,7 @@ public class EventImpl<T> implements Event<T> {
 
     @Override
     public List<T> getListeners() {
-        ImmutableList.Builder<T> result = ImmutableList.<T>builder();
+        ImmutableList.Builder<T> result = ImmutableList.builder();
 
         this.listeners.sort(null);
         for (Entry entry : this.listeners) {
