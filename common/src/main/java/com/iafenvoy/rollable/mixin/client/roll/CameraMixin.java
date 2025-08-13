@@ -1,0 +1,139 @@
+package com.iafenvoy.rollable.mixin.client.roll;
+
+import com.iafenvoy.rollable.api.RollCamera;
+import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.math.MagicNumbers;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.Camera;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.BlockView;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Environment(EnvType.CLIENT)
+@Mixin(Camera.class)
+public abstract class CameraMixin implements RollCamera {
+    @Shadow
+    private Entity focusedEntity;
+
+    @Unique
+    private boolean isRolling;
+    @Unique
+    private float lastRollBack;
+    @Unique
+    private float rollBack;
+    @Unique
+    private float roll;
+    @Unique
+    private final ThreadLocal<Float> tempRoll = new ThreadLocal<>();
+
+    @Inject(
+            method = "updateEyeHeight",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/Camera;cameraY:F",
+                    ordinal = 0
+            )
+    )
+    private void doABarrelRoll$interpolateRollnt(CallbackInfo ci) {
+        if (!((RollEntity) this.focusedEntity).doABarrelRoll$isRolling()) {
+            this.lastRollBack = this.rollBack;
+            this.rollBack -= this.rollBack * 0.5f;
+        }
+    }
+
+    @Inject(
+            method = "update",
+            at = @At("HEAD")
+    )
+    private void doABarrelRoll$captureTickDeltaAndUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+        tickDeltaRef.set(tickDelta);
+        this.isRolling = ((RollEntity) focusedEntity).doABarrelRoll$isRolling();
+    }
+
+    @Inject(
+            method = "update",
+            at = @At("TAIL")
+    )
+    private void doABarrelRoll$updateRollBack(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+        if (this.isRolling) {
+            this.rollBack = this.roll;
+            this.lastRollBack = this.roll;
+        }
+    }
+
+    @WrapWithCondition(
+            method = "update",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    ordinal = 0
+            )
+    )
+    private boolean doABarrelRoll$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
+        if (this.isRolling) {
+            this.tempRoll.set(((RollEntity) this.focusedEntity).doABarrelRoll$getRoll(tickDelta.get()));
+        } else {
+            this.tempRoll.set(MathHelper.lerp(tickDelta.get(), this.lastRollBack, this.rollBack));
+        }
+        return true;
+    }
+
+    @WrapWithCondition(
+            method = "update",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    ordinal = 1
+            )
+    )
+    private boolean doABarrelRoll$addRoll2(Camera thiz, float yaw, float pitch) {
+        this.tempRoll.set(-this.roll);
+        return true;
+    }
+
+    @WrapWithCondition(
+            method = "update",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V",
+                    ordinal = 2
+            )
+    )
+    private boolean doABarrelRoll$addRoll3(Camera thiz, float yaw, float pitch) {
+        this.tempRoll.set(0.0f);
+        return true;
+    }
+
+    @ModifyArg(
+            method = "setRotation",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;"
+            ),
+            index = 2
+    )
+    private float doABarrelRoll$setRoll(float original) {
+        Float roll = this.tempRoll.get();
+        if (roll != null) {
+            this.roll = roll;
+            return (float) (this.roll * MagicNumbers.TORAD);
+        }
+        return original;
+    }
+
+    @Override
+    public float doABarrelRoll$getRoll() {
+        return this.roll;
+    }
+}
