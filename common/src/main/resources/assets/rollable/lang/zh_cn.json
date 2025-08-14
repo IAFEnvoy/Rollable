@@ -21,7 +21,6 @@
   "config.rollable.controls.activation_behaviour.hybrid_toggle": "混合切换模式",
   "config.rollable.controls.activation_behaviour.triple_jump": "三段跳",
   "config.rollable.controls.activation_behaviour.vanilla": "原版模式",
-  "config.rollable.generals.activationBehaviour": "激活方式",
   "config.rollable.generals.disableWhenSubmerged": "水下时禁用",
   "config.rollable.generals.enabled": "启用模组",
   "config.rollable.generals.invertPitch": "反转俯仰角",

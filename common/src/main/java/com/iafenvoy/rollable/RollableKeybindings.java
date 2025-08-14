@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-public class ModKeybindings {
+public class RollableKeybindings {
     private static final String CATEGORY_MAIN = "category.%s.%s".formatted(Rollable.MOD_ID, Rollable.MOD_ID);
     private static final String CATEGORY_MOVEMENT = "category.%s.%s.movement".formatted(Rollable.MOD_ID, Rollable.MOD_ID);
 
@@ -19,12 +19,7 @@ public class ModKeybindings {
         return "key.%s.%s".formatted(Rollable.MOD_ID, key);
     }
 
-    public static final KeyBinding TOGGLE_ENABLED = new KeyBinding(
-            format("toggle_enabled"),
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_I,
-            CATEGORY_MAIN
-    );
+    public static final KeyBinding TOGGLE_ENABLED = new KeyBinding(format("toggle_enabled"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, CATEGORY_MAIN);
     public static final KeyBinding OPEN_CONFIG = new KeyBinding(format("open_config"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
 
     public static final KeyBinding PITCH_UP = new KeyBinding(format("pitch_up"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MOVEMENT);

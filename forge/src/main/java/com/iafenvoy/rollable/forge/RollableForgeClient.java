@@ -1,8 +1,8 @@
 package com.iafenvoy.rollable.forge;
 
 import com.iafenvoy.jupiter.render.screen.ClientConfigScreen;
-import com.iafenvoy.rollable.EventCallbacksClient;
-import com.iafenvoy.rollable.ModKeybindings;
+import com.iafenvoy.rollable.RollableKeybindings;
+import com.iafenvoy.rollable.RollableClient;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,14 +24,14 @@ public class RollableForgeClient {
 
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
-        ModKeybindings.ALL.forEach(event::register);
+        RollableKeybindings.ALL.forEach(event::register);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     public static class ForgeEvents {
         @SubscribeEvent
         public static void clientTick(TickEvent.ClientTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) EventCallbacksClient.clientTick(MinecraftClient.getInstance());
+            if (event.phase == TickEvent.Phase.END) RollableClient.clientTick(MinecraftClient.getInstance());
         }
     }
 }

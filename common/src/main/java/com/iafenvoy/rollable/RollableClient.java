@@ -75,4 +75,10 @@ public class RollableClient {
             return false;
         return player.isFallFlying();
     }
+
+    public static void clientTick(MinecraftClient client) {
+        RollableKeybindings.CONTEXT.tick();
+        if (!isFallFlying()) clearValues();
+        RollableKeybindings.clientTick(client);
+    }
 }

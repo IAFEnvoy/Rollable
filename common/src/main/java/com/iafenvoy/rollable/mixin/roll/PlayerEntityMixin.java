@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.mixin.roll.entity;
+package com.iafenvoy.rollable.mixin.roll;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
@@ -10,17 +10,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @Unique
-    protected boolean isRolling;
+    protected boolean rollable$isRolling;
     @Unique
-    protected float prevRoll;
+    protected float rollable$prevRoll;
     @Unique
-    protected float roll;
+    protected float rollable$roll;
 
     @Override
     protected void rollable$baseTickTail(CallbackInfo ci) {
         this.rollable$baseTickTail2();
 
-        this.prevRoll = this.rollable$getRoll();
+        this.rollable$prevRoll = this.rollable$getRoll();
 
         if (!this.rollable$isRolling()) {
             this.rollable$setRoll(0.0f);
@@ -33,23 +33,23 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 
     @Override
     public boolean rollable$isRolling() {
-        return this.isRolling;
+        return this.rollable$isRolling;
     }
 
     @Override
     public void rollable$setRolling(boolean rolling) {
-        this.isRolling = rolling;
+        this.rollable$isRolling = rolling;
     }
 
     @Override
     public float rollable$getRoll() {
-        return this.roll;
+        return this.rollable$roll;
     }
 
     @Override
     public float rollable$getRoll(float tickDelta) {
         if (tickDelta == 1.0f) return this.rollable$getRoll();
-        return MathHelper.lerp(tickDelta, this.prevRoll, this.rollable$getRoll());
+        return MathHelper.lerp(tickDelta, this.rollable$prevRoll, this.rollable$getRoll());
     }
 
     @Override
@@ -59,9 +59,9 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
             return;
         }
         float lastRoll = this.rollable$getRoll();
-        this.roll = roll;
+        this.rollable$roll = roll;
 
-        if (roll < -90 && lastRoll > 90) this.prevRoll -= 360;
-        else if (roll > 90 && lastRoll < -90) this.prevRoll += 360;
+        if (roll < -90 && lastRoll > 90) this.rollable$prevRoll -= 360;
+        else if (roll > 90 && lastRoll < -90) this.rollable$prevRoll += 360;
     }
 }

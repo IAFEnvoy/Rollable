@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.util.RollEntity;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -30,7 +30,7 @@ public abstract class MouseMixin {
     private double lastMouseUpdateTime;
 
     @Unique
-    private final Vector2d mouseTurnVec = new Vector2d();
+    private final Vector2d rollable$mouseTurnVec = new Vector2d();
 
     @ModifyVariable(method = "updateMouse", index = 3, at = @At(value = "STORE", ordinal = 0))
     private double rollable$captureDelta(double original, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
@@ -50,6 +50,7 @@ public abstract class MouseMixin {
         return !this.rollable$updateMouse(player, cursorDeltaX, cursorDeltaY, mouseDeltaRef.get());
     }
 
+    @Unique
     public boolean rollable$updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, double mouseDelta) {
         RollEntity rollPlayer = (RollEntity) player;
 
@@ -58,11 +59,11 @@ public abstract class MouseMixin {
             if (RollableClientConfig.INSTANCE.generals.momentumBasedMouse.getValue()) {
 
                 // add the mouse movement to the current vector and normalize if needed
-                this.mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
-                if (this.mouseTurnVec.lengthSquared() > 1.0) {
-                    this.mouseTurnVec.normalize();
+                this.rollable$mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
+                if (this.rollable$mouseTurnVec.lengthSquared() > 1.0) {
+                    this.rollable$mouseTurnVec.normalize();
                 }
-                Vector2d readyTurnVec = new Vector2d(this.mouseTurnVec);
+                Vector2d readyTurnVec = new Vector2d(this.rollable$mouseTurnVec);
 
                 // check if the vector is within the deadzone
                 double deadzone = RollableClientConfig.INSTANCE.generals.momentumMouseDeadzone.getValue();
@@ -75,14 +76,14 @@ public abstract class MouseMixin {
             } else {
 
                 // if we are not using a momentum based mouse, we can reset it and apply the values directly
-                this.mouseTurnVec.zero();
+                this.rollable$mouseTurnVec.zero();
                 rollPlayer.rollable$changeElytraLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             }
 
             return true;
         }
 
-        this.mouseTurnVec.zero();
+        this.rollable$mouseTurnVec.zero();
         return false;
     }
 }

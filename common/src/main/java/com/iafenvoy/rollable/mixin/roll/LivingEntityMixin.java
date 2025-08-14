@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.mixin.roll.entity;
+package com.iafenvoy.rollable.mixin.roll;
 
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

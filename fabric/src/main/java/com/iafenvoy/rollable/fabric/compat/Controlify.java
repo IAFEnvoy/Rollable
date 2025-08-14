@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.fabric.compat;
 
-import com.iafenvoy.rollable.ModKeybindings;
+import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableClient;
 import com.iafenvoy.rollable.config.RollableClientConfig;
@@ -60,45 +60,45 @@ public class Controlify implements ControlifyEntrypoint {
 
         PITCH_UP = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("pitch_up"))
-                .category(Text.translatable(ModKeybindings.PITCH_UP.getCategory()))
-                .name(Text.translatable(ModKeybindings.PITCH_UP.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.PITCH_UP.getCategory()))
+                .name(Text.translatable(RollableKeybindings.PITCH_UP.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.PITCH_UP)
+                .addKeyCorrelation(RollableKeybindings.PITCH_UP)
         );
         PITCH_DOWN = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("pitch_down"))
-                .category(Text.translatable(ModKeybindings.PITCH_DOWN.getCategory()))
-                .name(Text.translatable(ModKeybindings.PITCH_DOWN.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.PITCH_DOWN.getCategory()))
+                .name(Text.translatable(RollableKeybindings.PITCH_DOWN.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.PITCH_DOWN)
+                .addKeyCorrelation(RollableKeybindings.PITCH_DOWN)
         );
         ROLL_LEFT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("roll_left"))
-                .category(Text.translatable(ModKeybindings.ROLL_LEFT.getCategory()))
-                .name(Text.translatable(ModKeybindings.ROLL_LEFT.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.ROLL_LEFT.getCategory()))
+                .name(Text.translatable(RollableKeybindings.ROLL_LEFT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.ROLL_LEFT)
+                .addKeyCorrelation(RollableKeybindings.ROLL_LEFT)
         );
         ROLL_RIGHT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("roll_right"))
-                .category(Text.translatable(ModKeybindings.ROLL_RIGHT.getCategory()))
-                .name(Text.translatable(ModKeybindings.ROLL_RIGHT.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.ROLL_RIGHT.getCategory()))
+                .name(Text.translatable(RollableKeybindings.ROLL_RIGHT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.ROLL_RIGHT)
+                .addKeyCorrelation(RollableKeybindings.ROLL_RIGHT)
         );
         YAW_LEFT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("yaw_left"))
-                .category(Text.translatable(ModKeybindings.YAW_LEFT.getCategory()))
-                .name(Text.translatable(ModKeybindings.YAW_LEFT.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.YAW_LEFT.getCategory()))
+                .name(Text.translatable(RollableKeybindings.YAW_LEFT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.YAW_LEFT)
+                .addKeyCorrelation(RollableKeybindings.YAW_LEFT)
         );
         YAW_RIGHT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("yaw_right"))
-                .category(Text.translatable(ModKeybindings.YAW_RIGHT.getCategory()))
-                .name(Text.translatable(ModKeybindings.YAW_RIGHT.getTranslationKey()))
+                .category(Text.translatable(RollableKeybindings.YAW_RIGHT.getCategory()))
+                .name(Text.translatable(RollableKeybindings.YAW_RIGHT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
-                .addKeyCorrelation(ModKeybindings.YAW_RIGHT)
+                .addKeyCorrelation(RollableKeybindings.YAW_RIGHT)
         );
 
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context.useModifier(this::applyToRotation), RollableClient::isFallFlying);

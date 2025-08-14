@@ -21,7 +21,6 @@
   "config.rollable.controls.activation_behaviour.hybrid_toggle": "Hybrid Toggle",
   "config.rollable.controls.activation_behaviour.triple_jump": "Triple Jump",
   "config.rollable.controls.activation_behaviour.vanilla": "Vanilla",
-  "config.rollable.generals.activationBehaviour": "Activation Behaviour",
   "config.rollable.generals.disableWhenSubmerged": "Disable When Submerged",
   "config.rollable.generals.enabled": "Enabled",
   "config.rollable.generals.invertPitch": "Invert Pitch",

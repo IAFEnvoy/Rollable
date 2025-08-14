@@ -3,10 +3,8 @@ package com.iafenvoy.rollable.config;
 import com.iafenvoy.jupiter.config.container.AutoInitConfigContainer;
 import com.iafenvoy.jupiter.config.entry.BooleanEntry;
 import com.iafenvoy.jupiter.config.entry.DoubleEntry;
-import com.iafenvoy.jupiter.config.entry.EnumEntry;
 import com.iafenvoy.jupiter.config.entry.SeparatorEntry;
 import com.iafenvoy.jupiter.interfaces.IConfigEntry;
-import com.iafenvoy.jupiter.interfaces.IConfigEnumEntry;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
 import com.iafenvoy.rollable.config.entry.SensitivityEntry;
@@ -36,7 +34,6 @@ public class RollableClientConfig extends AutoInitConfigContainer {
         public final IConfigEntry<Boolean> invertPitch = new BooleanEntry(format("generals", "invertPitch"), false).json("invertPitch");
         public final IConfigEntry<Boolean> momentumBasedMouse = new BooleanEntry(format("generals", "momentumBasedMouse"), false).json("momentumBasedMouse");
         public final IConfigEntry<Double> momentumMouseDeadzone = new DoubleEntry(format("generals", "momentumMouseDeadzone"), 0.2, 0, Integer.MAX_VALUE).json("momentumMouseDeadzone");
-        public final IConfigEntry<IConfigEnumEntry> activationBehaviour = new EnumEntry(format("generals", "activationBehaviour"), ActivationBehaviour.VANILLA).json("activationBehaviour");
         public final IConfigEntry<Boolean> disableWhenSubmerged = new BooleanEntry(format("generals", "disableWhenSubmerged"), true).json("disableWhenSubmerged");
 
         public Generals() {

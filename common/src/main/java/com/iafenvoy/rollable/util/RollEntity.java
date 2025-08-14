@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.api;
+package com.iafenvoy.rollable.util;
 
 import com.iafenvoy.rollable.config.Sensitivity;
 

@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.flight;
 
-import com.iafenvoy.rollable.ModKeybindings;
+import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.Sensitivity;
@@ -19,12 +19,12 @@ public class RotationModifiers {
     public static RollContext.ConfiguresRotation buttonControls(double power) {
         return (rotationInstant, context) -> {
             double delta = power * context.getRenderDelta(), pitch = 0, yaw = 0, roll = 0;
-            if (ModKeybindings.PITCH_UP.isPressed()) pitch -= delta;
-            if (ModKeybindings.PITCH_DOWN.isPressed()) pitch += delta;
-            if (ModKeybindings.YAW_LEFT.isPressed()) yaw -= delta;
-            if (ModKeybindings.YAW_RIGHT.isPressed()) yaw += delta;
-            if (ModKeybindings.ROLL_LEFT.isPressed()) roll -= delta;
-            if (ModKeybindings.ROLL_RIGHT.isPressed()) roll += delta;
+            if (RollableKeybindings.PITCH_UP.isPressed()) pitch -= delta;
+            if (RollableKeybindings.PITCH_DOWN.isPressed()) pitch += delta;
+            if (RollableKeybindings.YAW_LEFT.isPressed()) yaw -= delta;
+            if (RollableKeybindings.YAW_RIGHT.isPressed()) yaw += delta;
+            if (RollableKeybindings.ROLL_LEFT.isPressed()) roll -= delta;
+            if (RollableKeybindings.ROLL_RIGHT.isPressed()) roll += delta;
             // Putting this in the roll value, since it'll be swapped later
             return rotationInstant.add(pitch, yaw, roll);
         };

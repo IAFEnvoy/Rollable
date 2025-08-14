@@ -1,6 +1,6 @@
-package com.iafenvoy.rollable.mixin.roll.entity;
+package com.iafenvoy.rollable.mixin.roll;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.util.RollEntity;
 import com.iafenvoy.rollable.config.Sensitivity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;

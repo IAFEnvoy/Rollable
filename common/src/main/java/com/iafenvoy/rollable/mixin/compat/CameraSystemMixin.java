@@ -1,17 +1,19 @@
 package com.iafenvoy.rollable.mixin.compat;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.util.RollEntity;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Pseudo
 @Mixin(targets = "mirsario.cameraoverhaul.common.systems.CameraSystem")
 public abstract class CameraSystemMixin {
-    private boolean allowModifications() {
+    @Unique
+    private boolean rollable$allowModifications() {
         return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollEntity rollEntity && rollEntity.rollable$isRolling());
     }
 
@@ -25,7 +27,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float rollable$cancelVerticalVelocityPitchOffset(float original) {
-        return this.allowModifications() ? original : 0f;
+        return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -38,7 +40,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float rollable$cancelForwardVelocityPitchOffset(float original) {
-        return this.allowModifications() ? original : 0f;
+        return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -51,7 +53,7 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float rollable$cancelYawDeltaRollOffset(float original) {
-        return this.allowModifications() ? original : 0f;
+        return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
@@ -64,6 +66,6 @@ public abstract class CameraSystemMixin {
             index = 5
     )
     private float rollable$cancelStrafingRollOffset(float original) {
-        return this.allowModifications() ? original : 0f;
+        return this.rollable$allowModifications() ? original : 0f;
     }
 }

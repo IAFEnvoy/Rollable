@@ -4,7 +4,7 @@ import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.event.RollEvents;
 import com.iafenvoy.rollable.flight.RotationModifiers;
-import com.iafenvoy.rollable.mixin.roll.entity.PlayerEntityMixin;
+import com.iafenvoy.rollable.mixin.roll.PlayerEntityMixin;
 import com.iafenvoy.rollable.flight.RotationInstant;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -94,8 +94,8 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
         this.changeLookDirection(deltaX / 0.15, deltaY / 0.15);
 
         // Apply roll
-        this.roll += (float) deltaRoll;
-        this.prevRoll += (float) deltaRoll;
+        this.rollable$roll += (float) deltaRoll;
+        this.rollable$prevRoll += (float) deltaRoll;
 
         // fix hand spasm when wrapping yaw value
         if (this.getYaw() < -90 && this.renderYaw > 90) {
