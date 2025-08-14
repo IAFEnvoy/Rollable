@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.mixin.client.roll.entity;
+package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.config.Sensitivity;

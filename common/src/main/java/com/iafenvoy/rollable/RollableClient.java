@@ -2,14 +2,14 @@ package com.iafenvoy.rollable;
 
 import com.iafenvoy.jupiter.ConfigManager;
 import com.iafenvoy.jupiter.render.screen.WidgetBuilderManager;
-import com.iafenvoy.jupiter.render.widget.builder.TextFieldWidgetBuilder;
-import com.iafenvoy.rollable.event.RollEvents;
-import com.iafenvoy.rollable.flight.RotationInstant;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
+import com.iafenvoy.rollable.config.entry.ExtendedTextFieldWidgetBuilder;
 import com.iafenvoy.rollable.config.entry.SensitivityEntry;
 import com.iafenvoy.rollable.config.entry.dialog.SensitivityWidgetBuilder;
+import com.iafenvoy.rollable.event.RollEvents;
 import com.iafenvoy.rollable.event.RollGroup;
+import com.iafenvoy.rollable.flight.RotationInstant;
 import com.iafenvoy.rollable.flight.RotationModifiers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -24,7 +24,7 @@ public class RollableClient {
 
     public static void init() {
         //Register Config
-        WidgetBuilderManager.register(ExpressionParserEntry.TYPE, TextFieldWidgetBuilder::new);
+        WidgetBuilderManager.register(ExpressionParserEntry.TYPE, ExtendedTextFieldWidgetBuilder::new);
         WidgetBuilderManager.register(SensitivityEntry.TYPE, config -> new SensitivityWidgetBuilder((SensitivityEntry) config));
         ConfigManager.getInstance().registerConfigHandler(RollableClientConfig.INSTANCE);
 
@@ -55,10 +55,7 @@ public class RollableClient {
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
                         .useModifier(RotationModifiers::applyControlSurfaceEfficacy, RollableClientConfig.INSTANCE.banking.simulateControlSurfaceEfficacy::getValue)
-                        .useModifier(RotationModifiers.smoothing(
-                                PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER,
-                                RollableClientConfig.INSTANCE.sensitivity.cameraSmoothing.getValue()
-                        ))
+                        .useModifier(RotationModifiers.smoothing(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, RollableClientConfig.INSTANCE.sensitivity.cameraSmoothing.getValue()))
                         .useModifier(RotationModifiers::banking, RollableClientConfig.INSTANCE.banking.enabled::getValue)
                         .useModifier(RotationModifiers::reorient, RollableClientConfig.INSTANCE.banking.automaticRighting::getValue),
                 FALL_FLYING_GROUP);

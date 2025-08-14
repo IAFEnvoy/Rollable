@@ -31,9 +31,7 @@ public class RollableForgeClient {
     public static class ForgeEvents {
         @SubscribeEvent
         public static void clientTick(TickEvent.ClientTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) {
-                EventCallbacksClient.clientTick(MinecraftClient.getInstance());
-            }
+            if (event.phase == TickEvent.Phase.END) EventCallbacksClient.clientTick(MinecraftClient.getInstance());
         }
     }
 }

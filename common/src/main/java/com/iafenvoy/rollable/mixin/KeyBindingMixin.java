@@ -1,8 +1,6 @@
-package com.iafenvoy.rollable.mixin.client.key;
+package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.ModKeybindings;
-import com.iafenvoy.rollable.util.InputContext;
-import com.iafenvoy.rollable.util.key.ContextualKeyBinding;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -11,31 +9,15 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 @Mixin(KeyBinding.class)
-public abstract class KeyBindingMixin implements ContextualKeyBinding {
-    @Unique
-    private final ArrayList<InputContext> contexts = new ArrayList<>();
-
-    @Override
-    public List<InputContext> rollable$getContexts() {
-        return this.contexts;
-    }
-
-    @Override
-    public void rollable$addToContext(InputContext context) {
-        this.contexts.add(context);
-    }
-
+public abstract class KeyBindingMixin {
     private static KeyBinding getContextKeyBinding(InputUtil.Key key) {
         KeyBinding binding = ModKeybindings.CONTEXT.getKeyBinding(key);
         if (binding != null)

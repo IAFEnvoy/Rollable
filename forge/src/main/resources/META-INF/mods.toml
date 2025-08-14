@@ -1,17 +1,22 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/IAFEnvoy/Rollable/issues"
+license = "LGPL-3.0"
 
 [[mods]]
 modId = "rollable"
 version = "${version}"
 displayName = "Rollable"
-authors = "Me!"
-description = '''
-This is an example description! Tell everyone what your mod is about!
+authors = "IAFEnvoy"
+credits = '''
+Parent projects:
+Cool Elytra Roll by Jorbon
+Do a Barrel Roll by enjarai
 '''
-#logoFile = ""
+description = '''
+Freely flying sight as you want.
+'''
+logoFile = "logo.png"
 
 [[dependencies.rollable]]
 modId = "forge"

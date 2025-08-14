@@ -1,8 +1,8 @@
-package com.iafenvoy.rollable;
+package com.iafenvoy.rollable.util;
 
 import java.util.function.BiConsumer;
 
-public class ModMath {
+public class RollableMath {
     public static void forBresenhamLine(int x0, int y0, int x1, int y1, BiConsumer<Integer, Integer> consumer) {
         int dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
         int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;

@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.mixin.client.roll;
+package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.api.RollEntity;
 import com.llamalad7.mixinextras.sugar.Local;

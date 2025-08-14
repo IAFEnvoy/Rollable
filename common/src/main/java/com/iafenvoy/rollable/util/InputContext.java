@@ -1,6 +1,5 @@
 package com.iafenvoy.rollable.util;
 
-import com.iafenvoy.rollable.util.key.ContextualKeyBinding;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -36,7 +35,6 @@ public class InputContext {
     public void addKeyBinding(KeyBinding keyBinding) {
         Objects.requireNonNull(keyBinding);
         this.keyBindings.add(keyBinding);
-        ((ContextualKeyBinding) keyBinding).rollable$addToContext(this);
     }
 
     public List<KeyBinding> getKeyBindings() {

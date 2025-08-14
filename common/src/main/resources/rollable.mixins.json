@@ -5,14 +5,13 @@
   "minVersion": "0.8",
   "client": [
     "client.ClientPlayerEntityMixin",
-    "client.PlayerEntityMixin",
-    "client.key.KeyBindingEntryMixin",
-    "client.key.KeyBindingMixin",
-    "client.roll.CameraMixin",
-    "client.roll.GameRendererMixin",
-    "client.roll.MouseMixin",
-    "client.roll.PlayerEntityRendererMixin",
-    "client.roll.entity.ClientPlayerEntityMixin"
+    "PlayerEntityMixin",
+    "KeyBindingMixin",
+    "CameraMixin",
+    "GameRendererMixin",
+    "MouseMixin",
+    "PlayerEntityRendererMixin",
+    "ClientPlayerEntityMixin"
   ],
   "mixins": [
     "compat.CameraSystemMixin",

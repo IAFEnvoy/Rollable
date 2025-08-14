@@ -36,7 +36,7 @@ public class SensitivityDialog extends Dialog<Sensitivity> {
         DoubleEntry entry = new DoubleEntry(t, defaultValue);
         entry.setValue(value);
         WidgetBuilder<Double> builder = WidgetBuilderManager.get(entry);
-        builder.addDialogElements(this::addDrawableChild, I18n.translate(t) + ":", 40, 30 + index * 25, Math.max(10, this.width - 70), 20);
+        builder.addDialogElements(this::addDrawableChild, I18n.translate(t) + ":", 80, 30 + index * 25, Math.max(10, this.width - 110), 20);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.mixin.client;
+package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.config.ActivationBehaviour;
 import com.iafenvoy.rollable.config.RollableClientConfig;

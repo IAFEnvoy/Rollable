@@ -3,11 +3,11 @@ package com.iafenvoy.rollable.fabric.compat;
 import com.iafenvoy.rollable.ModKeybindings;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableClient;
-import com.iafenvoy.rollable.flight.RollContext;
-import com.iafenvoy.rollable.event.RollEvents;
-import com.iafenvoy.rollable.flight.RotationInstant;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.Sensitivity;
+import com.iafenvoy.rollable.event.RollEvents;
+import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RotationInstant;
 import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.ControlifyBindApi;
 import dev.isxander.controlify.api.bind.InputBindingSupplier;
@@ -20,10 +20,7 @@ import net.minecraft.text.Text;
 import java.util.Optional;
 
 public class Controlify implements ControlifyEntrypoint {
-    public static final BindContext FALL_FLYING = new BindContext(
-            Rollable.id("fall_flying"),
-            mc -> RollableClient.isFallFlying()
-    );
+    public static final BindContext FALL_FLYING = new BindContext(Rollable.id("fall_flying"), client -> RollableClient.isFallFlying());
 
     public static InputBindingSupplier PITCH_UP;
     public static InputBindingSupplier PITCH_DOWN;
@@ -57,61 +54,57 @@ public class Controlify implements ControlifyEntrypoint {
     }
 
     @Override
-    public void onControlifyPreInit(ControlifyApi controlifyApi) {
+    public void onControlifyInit(ControlifyApi controlifyApi) {
         ControlifyBindApi bindings = ControlifyBindApi.get();
         bindings.registerBindContext(FALL_FLYING);
 
         PITCH_UP = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("pitch_up"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_up"))
+                .category(Text.translatable(ModKeybindings.PITCH_UP.getCategory()))
+                .name(Text.translatable(ModKeybindings.PITCH_UP.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.PITCH_UP)
         );
         PITCH_DOWN = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("pitch_down"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_down"))
+                .category(Text.translatable(ModKeybindings.PITCH_DOWN.getCategory()))
+                .name(Text.translatable(ModKeybindings.PITCH_DOWN.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.PITCH_DOWN)
         );
         ROLL_LEFT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("roll_left"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_left"))
+                .category(Text.translatable(ModKeybindings.ROLL_LEFT.getCategory()))
+                .name(Text.translatable(ModKeybindings.ROLL_LEFT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.ROLL_LEFT)
         );
         ROLL_RIGHT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("roll_right"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_right"))
+                .category(Text.translatable(ModKeybindings.ROLL_RIGHT.getCategory()))
+                .name(Text.translatable(ModKeybindings.ROLL_RIGHT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.ROLL_RIGHT)
         );
         YAW_LEFT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("yaw_left"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_left"))
+                .category(Text.translatable(ModKeybindings.YAW_LEFT.getCategory()))
+                .name(Text.translatable(ModKeybindings.YAW_LEFT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.YAW_LEFT)
         );
         YAW_RIGHT = bindings.registerBinding(builder -> builder
                 .id(Rollable.id("yaw_right"))
-                .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
-                .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_right"))
+                .category(Text.translatable(ModKeybindings.YAW_RIGHT.getCategory()))
+                .name(Text.translatable(ModKeybindings.YAW_RIGHT.getTranslationKey()))
                 .allowedContexts(FALL_FLYING, BindContext.IN_GAME)
                 .addKeyCorrelation(ModKeybindings.YAW_RIGHT)
         );
 
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(this::applyToRotation),
-                RollableClient::isFallFlying);
+        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context.useModifier(this::applyToRotation), RollableClient::isFallFlying);
 
         ControlifyEvents.LOOK_INPUT_MODIFIER.register(event -> {
-            if (RollableClient.isFallFlying()) {
-                event.lookInput().zero();
-            }
+            if (RollableClient.isFallFlying()) event.lookInput().zero();
         });
     }
 
