@@ -25,7 +25,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     }
 
     @Inject(method = "tickMovement", at = @At("RETURN"))
-    public void doABarrelRoll$resetJump(CallbackInfo ci) {
+    public void rollable$resetJump(CallbackInfo ci) {
         if (this.isOnGround()) {
             MixinHooks.secondJump = false;
             MixinHooks.thirdJump = false;

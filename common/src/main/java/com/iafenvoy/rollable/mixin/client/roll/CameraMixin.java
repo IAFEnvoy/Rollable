@@ -37,21 +37,21 @@ public abstract class CameraMixin implements RollCamera {
     private final ThreadLocal<Float> tempRoll = new ThreadLocal<>();
 
     @Inject(method = "updateEyeHeight", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/Camera;cameraY:F", ordinal = 0))
-    private void doABarrelRoll$interpolateRollnt(CallbackInfo ci) {
-        if (!((RollEntity) this.focusedEntity).doABarrelRoll$isRolling()) {
+    private void rollable$interpolateRollnt(CallbackInfo ci) {
+        if (!((RollEntity) this.focusedEntity).rollable$isRolling()) {
             this.lastRollBack = this.rollBack;
             this.rollBack -= this.rollBack * 0.5f;
         }
     }
 
     @Inject(method = "update", at = @At("HEAD"))
-    private void doABarrelRoll$captureTickDeltaAndUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+    private void rollable$captureTickDeltaAndUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         tickDeltaRef.set(tickDelta);
-        this.isRolling = ((RollEntity) focusedEntity).doABarrelRoll$isRolling();
+        this.isRolling = ((RollEntity) focusedEntity).rollable$isRolling();
     }
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void doABarrelRoll$updateRollBack(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    private void rollable$updateRollBack(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         if (this.isRolling) {
             this.rollBack = this.roll;
             this.lastRollBack = this.roll;
@@ -59,9 +59,9 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @WrapWithCondition(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 0))
-    private boolean doABarrelRoll$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
+    private boolean rollable$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
         if (this.isRolling) {
-            this.tempRoll.set(((RollEntity) this.focusedEntity).doABarrelRoll$getRoll(tickDelta.get()));
+            this.tempRoll.set(((RollEntity) this.focusedEntity).rollable$getRoll(tickDelta.get()));
         } else {
             this.tempRoll.set(MathHelper.lerp(tickDelta.get(), this.lastRollBack, this.rollBack));
         }
@@ -69,19 +69,19 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @WrapWithCondition(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 1))
-    private boolean doABarrelRoll$addRoll2(Camera thiz, float yaw, float pitch) {
+    private boolean rollable$addRoll2(Camera thiz, float yaw, float pitch) {
         this.tempRoll.set(-this.roll);
         return true;
     }
 
     @WrapWithCondition(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 2))
-    private boolean doABarrelRoll$addRoll3(Camera thiz, float yaw, float pitch) {
+    private boolean rollable$addRoll3(Camera thiz, float yaw, float pitch) {
         this.tempRoll.set(0.0f);
         return true;
     }
 
     @ModifyArg(method = "setRotation", at = @At(value = "INVOKE", target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;"), index = 2)
-    private float doABarrelRoll$setRoll(float original) {
+    private float rollable$setRoll(float original) {
         Float roll = this.tempRoll.get();
         if (roll != null) {
             this.roll = roll;
@@ -91,7 +91,7 @@ public abstract class CameraMixin implements RollCamera {
     }
 
     @Override
-    public float doABarrelRoll$getRoll() {
+    public float rollable$getRoll() {
         return this.roll;
     }
 }

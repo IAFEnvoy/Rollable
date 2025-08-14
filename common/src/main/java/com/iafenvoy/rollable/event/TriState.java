@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.api.event;
+package com.iafenvoy.rollable.event;
 
 public enum TriState {
     TRUE,

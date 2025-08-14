@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin.client.key;
 
-import com.iafenvoy.rollable.api.key.InputContext;
+import com.iafenvoy.rollable.util.InputContext;
 import com.iafenvoy.rollable.util.key.ContextualKeyBinding;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -23,9 +23,9 @@ public abstract class KeyBindingEntryMixin {
     private KeyBinding binding;
 
     @ModifyExpressionValue(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;equals(Lnet/minecraft/client/option/KeyBinding;)Z"))
-    private boolean doABarrelRoll$ignoreCertainKeyBindingConflicts(boolean original, @Local KeyBinding otherBinding) {
-        List<InputContext> firstContexts = ((ContextualKeyBinding) this.binding).doABarrelRoll$getContexts();
-        List<InputContext> secondContexts = ((ContextualKeyBinding) otherBinding).doABarrelRoll$getContexts();
+    private boolean rollable$ignoreCertainKeyBindingConflicts(boolean original, @Local KeyBinding otherBinding) {
+        List<InputContext> firstContexts = ((ContextualKeyBinding) this.binding).rollable$getContexts();
+        List<InputContext> secondContexts = ((ContextualKeyBinding) otherBinding).rollable$getContexts();
 
         // none + none -> original
         // none + has -> false

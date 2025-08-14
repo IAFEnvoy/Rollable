@@ -1,11 +1,11 @@
 package com.iafenvoy.rollable.mixin.client.roll.entity;
 
-import com.iafenvoy.rollable.api.event.RollContext;
-import com.iafenvoy.rollable.api.event.RollEvents;
-import com.iafenvoy.rollable.api.rotation.RotationInstant;
+import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.config.Sensitivity;
+import com.iafenvoy.rollable.event.RollEvents;
 import com.iafenvoy.rollable.flight.RotationModifiers;
 import com.iafenvoy.rollable.mixin.roll.entity.PlayerEntityMixin;
+import com.iafenvoy.rollable.flight.RotationInstant;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -24,14 +24,14 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 
     @Override
     @Unique
-    protected void doABarrelRoll$baseTickTail2() {
-        this.doABarrelRoll$setRolling(RollEvents.shouldRoll());
+    protected void rollable$baseTickTail2() {
+        this.rollable$setRolling(RollEvents.SHOULD_ROLL.invoker().shouldRoll());
     }
 
     @Override
-    public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
+    public void rollable$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
         RotationInstant rotDelta = RotationInstant.of(pitch, yaw, roll);
-        float currentRoll = this.doABarrelRoll$getRoll();
+        float currentRoll = this.rollable$getRoll();
         RotationInstant currentRotation = RotationInstant.of(
                 this.getPitch(),
                 this.getYaw(),
@@ -40,23 +40,23 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
         RollContext context = RollContext.of(currentRotation, rotDelta, mouseDelta);
 
         context.useModifier(RotationModifiers.fixNaN("INPUT"));
-        RollEvents.earlyCameraModifiers(context);
+        RollEvents.EARLY_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
         context.useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"));
         context.useModifier((rotation, ctx) -> rotation.applySensitivity(sensitivity));
         context.useModifier(RotationModifiers.fixNaN("SENSITIVITY"));
-        RollEvents.lateCameraModifiers(context);
+        RollEvents.LATE_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
         context.useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"));
 
         rotDelta = context.getRotationDelta();
 
-        this.doABarrelRoll$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
+        this.rollable$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
     }
 
     @Override
-    public void doABarrelRoll$changeElytraLook(float pitch, float yaw, float roll) {
+    public void rollable$changeElytraLook(float pitch, float yaw, float roll) {
         float currentPitch = this.getPitch();
         float currentYaw = this.getYaw();
-        float currentRoll = this.doABarrelRoll$getRoll();
+        float currentRoll = this.rollable$getRoll();
 
         // Convert pitch, yaw, and roll to a facing and left vector
         Vector3d facing = new Vector3d(this.getRotationVecClient().toVector3f());

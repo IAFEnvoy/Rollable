@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(targets = "mirsario.cameraoverhaul.common.systems.CameraSystem")
 public abstract class CameraSystemMixin {
     private boolean allowModifications() {
-        return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollEntity rollEntity && rollEntity.doABarrelRoll$isRolling());
+        return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollEntity rollEntity && rollEntity.rollable$isRolling());
     }
 
     @Dynamic
@@ -24,7 +24,7 @@ public abstract class CameraSystemMixin {
             ),
             index = 5
     )
-    private float doABarrelRoll$cancelVerticalVelocityPitchOffset(float original) {
+    private float rollable$cancelVerticalVelocityPitchOffset(float original) {
         return this.allowModifications() ? original : 0f;
     }
 
@@ -37,7 +37,7 @@ public abstract class CameraSystemMixin {
             ),
             index = 5
     )
-    private float doABarrelRoll$cancelForwardVelocityPitchOffset(float original) {
+    private float rollable$cancelForwardVelocityPitchOffset(float original) {
         return this.allowModifications() ? original : 0f;
     }
 
@@ -50,7 +50,7 @@ public abstract class CameraSystemMixin {
             ),
             index = 5
     )
-    private float doABarrelRoll$cancelYawDeltaRollOffset(float original) {
+    private float rollable$cancelYawDeltaRollOffset(float original) {
         return this.allowModifications() ? original : 0f;
     }
 
@@ -63,7 +63,7 @@ public abstract class CameraSystemMixin {
             ),
             index = 5
     )
-    private float doABarrelRoll$cancelStrafingRollOffset(float original) {
+    private float rollable$cancelStrafingRollOffset(float original) {
         return this.allowModifications() ? original : 0f;
     }
 }

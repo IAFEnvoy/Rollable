@@ -3,17 +3,17 @@ package com.iafenvoy.rollable.api;
 import com.iafenvoy.rollable.config.Sensitivity;
 
 public interface RollEntity {
-    void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta);
+    void rollable$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta);
 
-    void doABarrelRoll$changeElytraLook(float pitch, float yaw, float roll);
+    void rollable$changeElytraLook(float pitch, float yaw, float roll);
 
-    boolean doABarrelRoll$isRolling();
+    boolean rollable$isRolling();
 
-    void doABarrelRoll$setRolling(boolean rolling);
+    void rollable$setRolling(boolean rolling);
 
-    float doABarrelRoll$getRoll();
+    float rollable$getRoll();
 
-    float doABarrelRoll$getRoll(float tickDelta);
+    float rollable$getRoll(float tickDelta);
 
-    void doABarrelRoll$setRoll(float roll);
+    void rollable$setRoll(float roll);
 }

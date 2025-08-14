@@ -1,6 +1,7 @@
 package com.iafenvoy.rollable.config;
 
 import com.iafenvoy.jupiter.interfaces.IConfigEnumEntry;
+import com.iafenvoy.rollable.Rollable;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ public enum ActivationBehaviour implements IConfigEnumEntry {
 
     @Override
     public Text getDisplayText() {
-        return Text.translatable("config.do_a_barrel_roll.controls.activation_behaviour." + this.name().toLowerCase());
+        return Text.translatable("config.%s.controls.activation_behaviour.%s".formatted(Rollable.MOD_ID, this.name().toLowerCase()));
     }
 
     @Override

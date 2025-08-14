@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
     @Inject(method = "baseTick", at = @At("TAIL"))
-    protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
+    protected void rollable$baseTickTail(CallbackInfo ci) {
     }
 }

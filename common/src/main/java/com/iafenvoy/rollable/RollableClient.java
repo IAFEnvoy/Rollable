@@ -3,13 +3,13 @@ package com.iafenvoy.rollable;
 import com.iafenvoy.jupiter.ConfigManager;
 import com.iafenvoy.jupiter.render.screen.WidgetBuilderManager;
 import com.iafenvoy.jupiter.render.widget.builder.TextFieldWidgetBuilder;
-import com.iafenvoy.rollable.api.event.RollEvents;
-import com.iafenvoy.rollable.api.event.RollGroup;
-import com.iafenvoy.rollable.api.rotation.RotationInstant;
+import com.iafenvoy.rollable.event.RollEvents;
+import com.iafenvoy.rollable.flight.RotationInstant;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
 import com.iafenvoy.rollable.config.entry.SensitivityEntry;
 import com.iafenvoy.rollable.config.entry.dialog.SensitivityWidgetBuilder;
+import com.iafenvoy.rollable.event.RollGroup;
 import com.iafenvoy.rollable.flight.RotationModifiers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -31,7 +31,7 @@ public class RollableClient {
         FALL_FLYING_GROUP.trueIf(RollableClient::isFallFlying);
 
         // Keyboard modifiers
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context.useModifier(RotationModifiers.buttonControls(1800)), 2000, FALL_FLYING_GROUP);
+        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context.useModifier(RotationModifiers.buttonControls(1800)), FALL_FLYING_GROUP);
 
         // Mouse modifiers, including swapping axes
         RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
@@ -50,7 +50,7 @@ public class RollableClient {
 
                             return RotationInstant.of(pitch, yaw, roll);
                         }),
-                1000, FALL_FLYING_GROUP);
+                FALL_FLYING_GROUP);
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
@@ -61,7 +61,7 @@ public class RollableClient {
                         ))
                         .useModifier(RotationModifiers::banking, RollableClientConfig.INSTANCE.banking.enabled::getValue)
                         .useModifier(RotationModifiers::reorient, RollableClientConfig.INSTANCE.banking.automaticRighting::getValue),
-                1000, FALL_FLYING_GROUP);
+                FALL_FLYING_GROUP);
     }
 
     public static void clearValues() {

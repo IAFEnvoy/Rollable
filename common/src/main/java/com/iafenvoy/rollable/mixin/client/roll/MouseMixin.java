@@ -1,7 +1,6 @@
 package com.iafenvoy.rollable.mixin.client.roll;
 
 import com.iafenvoy.rollable.api.RollEntity;
-import com.iafenvoy.rollable.api.RollMouse;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -23,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Mouse.class)
-public abstract class MouseMixin implements RollMouse {
+public abstract class MouseMixin {
     @Shadow
     @Final
     private MinecraftClient client;
@@ -34,28 +33,27 @@ public abstract class MouseMixin implements RollMouse {
     private final Vector2d mouseTurnVec = new Vector2d();
 
     @ModifyVariable(method = "updateMouse", index = 3, at = @At(value = "STORE", ordinal = 0))
-    private double doABarrelRoll$captureDelta(double original, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
+    private double rollable$captureDelta(double original, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
         if (this.lastMouseUpdateTime != Double.MIN_VALUE) mouseDeltaRef.set(original);
         return original;
     }
 
     @Inject(method = "updateMouse", at = @At(value = "RETURN", ordinal = 0))
-    private void doABarrelRoll$maintainMouseMomentum(CallbackInfo ci, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
+    private void rollable$maintainMouseMomentum(CallbackInfo ci, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
         if (this.client.player != null && !this.client.isPaused()) {
-            this.doABarrelRoll$updateMouse(this.client.player, 0, 0, mouseDeltaRef.get());
+            this.rollable$updateMouse(this.client.player, 0, 0, mouseDeltaRef.get());
         }
     }
 
     @WrapWithCondition(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
-    private boolean doABarrelRoll$changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
-        return !this.doABarrelRoll$updateMouse(player, cursorDeltaX, cursorDeltaY, mouseDeltaRef.get());
+    private boolean rollable$changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
+        return !this.rollable$updateMouse(player, cursorDeltaX, cursorDeltaY, mouseDeltaRef.get());
     }
 
-    @Override
-    public boolean doABarrelRoll$updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, double mouseDelta) {
+    public boolean rollable$updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, double mouseDelta) {
         RollEntity rollPlayer = (RollEntity) player;
 
-        if (rollPlayer.doABarrelRoll$isRolling()) {
+        if (rollPlayer.rollable$isRolling()) {
 
             if (RollableClientConfig.INSTANCE.generals.momentumBasedMouse.getValue()) {
 
@@ -72,13 +70,13 @@ public abstract class MouseMixin implements RollMouse {
 
                 // enlarge the vector and apply it to the camera
                 readyTurnVec.mul(1200 * (float) mouseDelta);
-                rollPlayer.doABarrelRoll$changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
+                rollPlayer.rollable$changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
 
             } else {
 
                 // if we are not using a momentum based mouse, we can reset it and apply the values directly
                 this.mouseTurnVec.zero();
-                rollPlayer.doABarrelRoll$changeElytraLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
+                rollPlayer.rollable$changeElytraLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             }
 
             return true;

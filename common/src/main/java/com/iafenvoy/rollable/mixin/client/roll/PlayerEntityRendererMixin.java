@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin {
     @ModifyArg(method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionf;)V", ordinal = 1), index = 0)
-    private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original, @Local(argsOnly = true) AbstractClientPlayerEntity player, @Local(argsOnly = true, ordinal = 2) float tickDelta) {
+    private Quaternionf rollable$modifyRoll(Quaternionf original, @Local(argsOnly = true) AbstractClientPlayerEntity player, @Local(argsOnly = true, ordinal = 2) float tickDelta) {
         RollEntity rollEntity = (RollEntity) player;
-        if (rollEntity.doABarrelRoll$isRolling()) {
-            float roll = rollEntity.doABarrelRoll$getRoll(tickDelta);
+        if (rollEntity.rollable$isRolling()) {
+            float roll = rollEntity.rollable$getRoll(tickDelta);
             return RotationAxis.POSITIVE_Y.rotationDegrees(roll);
         }
         return original;

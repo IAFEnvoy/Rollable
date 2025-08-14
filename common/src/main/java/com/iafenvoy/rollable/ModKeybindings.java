@@ -1,8 +1,8 @@
 package com.iafenvoy.rollable;
 
 import com.iafenvoy.jupiter.render.screen.ClientConfigScreen;
-import com.iafenvoy.rollable.api.key.InputContext;
 import com.iafenvoy.rollable.config.RollableClientConfig;
+import com.iafenvoy.rollable.util.InputContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -45,10 +45,7 @@ public class ModKeybindings {
             ROLL_RIGHT
     );
 
-    public static final InputContext CONTEXT = InputContext.of(
-            Rollable.id("fall_flying"),
-            RollableClient.FALL_FLYING_GROUP
-    );
+    public static final InputContext CONTEXT = new InputContext(RollableClient.FALL_FLYING_GROUP);
 
     static {
         CONTEXT.addKeyBinding(PITCH_UP);
@@ -61,21 +58,13 @@ public class ModKeybindings {
 
     public static void clientTick(MinecraftClient client) {
         while (TOGGLE_ENABLED.wasPressed()) {
-            RollableClientConfig.INSTANCE.generals.enabled.setValue(!RollableClientConfig.INSTANCE.generals.enabled.getValue());
+            boolean b = !RollableClientConfig.INSTANCE.generals.enabled.getValue();
+            RollableClientConfig.INSTANCE.generals.enabled.setValue(b);
             RollableClientConfig.INSTANCE.save();
-
-            if (client.player != null) {
-                client.player.sendMessage(
-                        Text.translatable(
-                                "key.do_a_barrel_roll." +
-                                        (RollableClientConfig.INSTANCE.generals.enabled.getValue() ? "toggle_enabled.enable" : "toggle_enabled.disable")
-                        ),
-                        true
-                );
-            }
+            if (client.player != null)
+                client.player.sendMessage(Text.translatable("key.%s.%s".formatted(Rollable.MOD_ID, b ? "toggle_enabled.enable" : "toggle_enabled.disable")), true);
         }
-        while (OPEN_CONFIG.wasPressed()) {
+        while (OPEN_CONFIG.wasPressed())
             client.setScreen(new ClientConfigScreen(client.currentScreen, RollableClientConfig.INSTANCE));
-        }
     }
 }

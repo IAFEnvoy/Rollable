@@ -3,9 +3,9 @@ package com.iafenvoy.rollable.fabric.compat;
 import com.iafenvoy.rollable.ModKeybindings;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableClient;
-import com.iafenvoy.rollable.api.event.RollContext;
-import com.iafenvoy.rollable.api.event.RollEvents;
-import com.iafenvoy.rollable.api.rotation.RotationInstant;
+import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.event.RollEvents;
+import com.iafenvoy.rollable.flight.RotationInstant;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.Sensitivity;
 import dev.isxander.controlify.api.ControlifyApi;
@@ -105,8 +105,8 @@ public class Controlify implements ControlifyEntrypoint {
         );
 
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                .useModifier(this::applyToRotation),
-                5, RollableClient::isFallFlying);
+                        .useModifier(this::applyToRotation),
+                RollableClient::isFallFlying);
 
         ControlifyEvents.LOOK_INPUT_MODIFIER.register(event -> {
             if (RollableClient.isFallFlying()) {

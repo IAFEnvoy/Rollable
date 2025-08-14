@@ -1,7 +1,7 @@
 package com.iafenvoy.rollable.mixin.client.key;
 
-import com.iafenvoy.rollable.api.key.InputContext;
-import com.iafenvoy.rollable.impl.key.InputContextImpl;
+import com.iafenvoy.rollable.ModKeybindings;
+import com.iafenvoy.rollable.util.InputContext;
 import com.iafenvoy.rollable.util.key.ContextualKeyBinding;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -27,34 +27,32 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
     private final ArrayList<InputContext> contexts = new ArrayList<>();
 
     @Override
-    public List<InputContext> doABarrelRoll$getContexts() {
+    public List<InputContext> rollable$getContexts() {
         return this.contexts;
     }
 
     @Override
-    public void doABarrelRoll$addToContext(InputContext context) {
+    public void rollable$addToContext(InputContext context) {
         this.contexts.add(context);
     }
 
     private static KeyBinding getContextKeyBinding(InputUtil.Key key) {
-        for (InputContextImpl context : InputContextImpl.getContexts()) {
-            KeyBinding binding = context.getKeyBinding(key);
-            if (binding != null)
-                if (context.isActive()) return binding;
-                else binding.setPressed(false);
-        }
+        KeyBinding binding = ModKeybindings.CONTEXT.getKeyBinding(key);
+        if (binding != null)
+            if (ModKeybindings.CONTEXT.isActive()) return binding;
+            else binding.setPressed(false);
         return null;
     }
 
     @WrapOperation(method = "onKeyPressed", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
-    private static Object doABarrelRoll$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
+    private static Object rollable$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         KeyBinding binding = getContextKeyBinding((InputUtil.Key) key);
         if (binding != null) return binding;
         return original.call(map, key);
     }
 
     @WrapOperation(method = "setKeyPressed", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
-    private static Object doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
+    private static Object rollable$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         KeyBinding binding = getContextKeyBinding((InputUtil.Key) key);
         KeyBinding originalBinding = original.call(map, key);
         if (binding != null) {
@@ -66,13 +64,12 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
     }
 
     @Inject(method = "updateKeysByCode", at = @At("HEAD"), require = 0)
-    private static void doABarrelRoll$updateContextualKeys(CallbackInfo ci) {
-        for (InputContextImpl context : InputContextImpl.getContexts())
-            context.updateKeysByCode();
+    private static void rollable$updateContextualKeys(CallbackInfo ci) {
+        ModKeybindings.CONTEXT.updateKeysByCode();
     }
 
     @WrapWithCondition(method = "updateKeysByCode", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), require = 0)
-    private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
-        return !InputContextImpl.contextsContain((KeyBinding) keyBinding);
+    private static boolean rollable$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
+        return !ModKeybindings.CONTEXT.getKeyBindings().contains((KeyBinding) keyBinding);
     }
 }
