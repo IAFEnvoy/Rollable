@@ -79,7 +79,7 @@ public abstract class CameraMixin implements RollCamera {
         return true;
     }
 
-    @ModifyArg(method = "setRotation", at = @At(value = "INVOKE", target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;"), index = 2)
+    @ModifyArg(method = "setRotation", at = @At(value = "INVOKE", target = "Lorg/joml/Quaternionf;rotationYXZ(FFF)Lorg/joml/Quaternionf;", remap = false), index = 2)
     private float rollable$setRoll(float original) {
         Float roll = this.rollable$tempRoll.get();
         if (roll != null) {
