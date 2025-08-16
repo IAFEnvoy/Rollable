@@ -1,6 +1,5 @@
 {
   "category.rollable.rollable": "Rollable",
-  "category.rollable.rollable.movement": "Rollable Movement",
   "config.rollable.advanced.aileronEfficacyFormula": "Aileron Efficacy Formula",
   "config.rollable.advanced.bankingXFormula": "Banking X Formula",
   "config.rollable.advanced.bankingYFormula": "Banking Y Formula",

@@ -29,6 +29,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
@@ -37,12 +38,12 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
+    modImplementation "maven.modrinth:flightassistant:C66m20Nf"
     modCompileOnly("dev.isxander:controlify:${project.controlify_version}") {
         exclude group: "net.fabricmc"
         exclude group: "maven.modrinth"
         exclude group: "com.github.CaffeineMC"
     }
-
 }
 
 processResources {

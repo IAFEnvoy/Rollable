@@ -3,7 +3,7 @@
   "id": "rollable",
   "version": "${version}",
   "name": "Rollable",
-  "description": "Freely fly rolling sight as you want.",
+  "description": "Make elytra flying like driving an aircraft.",
   "authors": [
     "IAFEnvoy"
   ],

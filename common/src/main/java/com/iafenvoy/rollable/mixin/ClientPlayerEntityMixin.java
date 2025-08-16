@@ -30,22 +30,20 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 
     @Override
     public void rollable$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
-        RotationInstant rotDelta = RotationInstant.of(pitch, yaw, roll);
+        RotationInstant rotDelta = new RotationInstant(pitch, yaw, roll);
         float currentRoll = this.rollable$getRoll();
-        RotationInstant currentRotation = RotationInstant.of(
-                this.getPitch(),
-                this.getYaw(),
-                currentRoll
-        );
-        RollContext context = RollContext.of(currentRotation, rotDelta, mouseDelta);
+        double pitch1 = this.getPitch();
+        double yaw1 = this.getYaw();
+        RotationInstant currentRotation = new RotationInstant(pitch1, yaw1, currentRoll);
+        RollContext context = new RollContext(currentRotation, rotDelta, mouseDelta);
 
-        context.useModifier(RotationModifiers.fixNaN("INPUT"));
+        context.useModifier(RotationModifiers.fixNaN());
         RollEvents.EARLY_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
-        context.useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"));
+        context.useModifier(RotationModifiers.fixNaN());
         context.useModifier((rotation, ctx) -> rotation.applySensitivity(sensitivity));
-        context.useModifier(RotationModifiers.fixNaN("SENSITIVITY"));
+        context.useModifier(RotationModifiers.fixNaN());
         RollEvents.LATE_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
-        context.useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"));
+        context.useModifier(RotationModifiers.fixNaN());
 
         rotDelta = context.getRotationDelta();
 

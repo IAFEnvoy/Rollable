@@ -1,7 +1,6 @@
 package com.iafenvoy.rollable.flight;
 
 import com.iafenvoy.rollable.RollableKeybindings;
-import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.math.Expression;
@@ -31,11 +30,11 @@ public class RotationModifiers {
     }
 
     public static RollContext.ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
-        return (rotationInstant, context) -> RotationInstant.of(
-                smoothness.pitch == 0 ? rotationInstant.pitch() : pitchSmoother.smooth(rotationInstant.pitch(), 1 / smoothness.pitch * context.getRenderDelta()),
-                smoothness.yaw == 0 ? rotationInstant.yaw() : yawSmoother.smooth(rotationInstant.yaw(), 1 / smoothness.yaw * context.getRenderDelta()),
-                smoothness.roll == 0 ? rotationInstant.roll() : rollSmoother.smooth(rotationInstant.roll(), 1 / smoothness.roll * context.getRenderDelta())
-        );
+        return (rotationInstant, context) -> {
+            double pitch = smoothness.pitch == 0 ? rotationInstant.pitch() : pitchSmoother.smooth(rotationInstant.pitch(), 1 / smoothness.pitch * context.getRenderDelta());
+            double yaw = smoothness.yaw == 0 ? rotationInstant.yaw() : yawSmoother.smooth(rotationInstant.yaw(), 1 / smoothness.yaw * context.getRenderDelta());
+            return new RotationInstant(pitch, yaw, smoothness.roll == 0 ? rotationInstant.roll() : rollSmoother.smooth(rotationInstant.roll(), 1 / smoothness.roll * context.getRenderDelta()));
+        };
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant, RollContext context) {
@@ -66,29 +65,14 @@ public class RotationModifiers {
 
         double cutoff = ROLL_REORIENT_CUTOFF;
         double rollDelta = 0;
-        if (-cutoff < currentRoll && currentRoll < cutoff) {
+        if (-cutoff < currentRoll && currentRoll < cutoff)
             rollDelta = -Math.pow(currentRoll, 3) / 3.0 + currentRoll; //0.1 * Math.pow(currentRoll, 5);
-        }
 
         return rotationInstant.add(0, 0, -rollDelta * strength * delta);
     }
 
-    public static RollContext.ConfiguresRotation fixNaN(String name) {
-        return (rotationInstant, context) -> {
-            if (Double.isNaN(rotationInstant.pitch())) {
-                rotationInstant = RotationInstant.of(0, rotationInstant.yaw(), rotationInstant.roll());
-                Rollable.LOGGER.warn("NaN found in pitch for {}, setting to 0 as fallback", name);
-            }
-            if (Double.isNaN(rotationInstant.yaw())) {
-                rotationInstant = RotationInstant.of(rotationInstant.pitch(), 0, rotationInstant.roll());
-                Rollable.LOGGER.warn("NaN found in yaw for {}, setting to 0 as fallback", name);
-            }
-            if (Double.isNaN(rotationInstant.roll())) {
-                rotationInstant = RotationInstant.of(rotationInstant.pitch(), rotationInstant.yaw(), 0);
-                Rollable.LOGGER.warn("NaN found in roll for {}, setting to 0 as fallback", name);
-            }
-            return rotationInstant;
-        };
+    public static RollContext.ConfiguresRotation fixNaN() {
+        return (rotationInstant, context) -> rotationInstant.notNaN();
     }
 
     public static RotationInstant applyControlSurfaceEfficacy(RotationInstant rotationInstant, RollContext context) {

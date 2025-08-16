@@ -5,16 +5,16 @@ import com.iafenvoy.rollable.config.Sensitivity;
 import java.util.function.BooleanSupplier;
 
 public record RotationInstant(double pitch, double yaw, double roll) {
-    public static RotationInstant of(double pitch, double yaw, double roll) {
-        return new RotationInstant(pitch, yaw, roll);
-    }
-
     public RotationInstant add(double pitch, double yaw, double roll) {
         return new RotationInstant(this.pitch + pitch, this.yaw + yaw, this.roll + roll);
     }
 
     public RotationInstant multiply(double pitch, double yaw, double roll) {
         return new RotationInstant(this.pitch * pitch, this.yaw * yaw, this.roll * roll);
+    }
+
+    public RotationInstant notNaN() {
+        return new RotationInstant(Double.isNaN(this.pitch) ? 0 : this.pitch, Double.isNaN(this.yaw) ? 0 : this.yaw, Double.isNaN(this.roll) ? 0 : this.roll);
     }
 
     public RotationInstant addAbsolute(double x, double y, double currentRoll) {

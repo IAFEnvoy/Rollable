@@ -3,10 +3,6 @@ package com.iafenvoy.rollable.flight;
 import java.util.function.BooleanSupplier;
 
 public class RollContext {
-    public static RollContext of(RotationInstant currentRotation, RotationInstant rotationDelta, double delta) {
-        return new RollContext(currentRotation, rotationDelta, delta);
-    }
-
     private final RotationInstant currentRotation;
     private RotationInstant rotationDelta;
     private final double renderDelta;

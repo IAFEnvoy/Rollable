@@ -1,6 +1,5 @@
 {
   "category.rollable.rollable": "Rollable",
-  "category.rollable.rollable.movement": "Rollable: 移动",
   "config.rollable.advanced.aileronEfficacyFormula": "副翼效能公式",
   "config.rollable.advanced.bankingXFormula": "倾斜X轴公式",
   "config.rollable.advanced.bankingYFormula": "倾斜Y轴公式",

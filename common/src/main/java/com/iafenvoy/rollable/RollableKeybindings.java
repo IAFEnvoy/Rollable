@@ -2,7 +2,6 @@ package com.iafenvoy.rollable;
 
 import com.iafenvoy.jupiter.render.screen.ClientConfigScreen;
 import com.iafenvoy.rollable.config.RollableClientConfig;
-import com.iafenvoy.rollable.util.InputContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -13,7 +12,6 @@ import java.util.List;
 
 public class RollableKeybindings {
     private static final String CATEGORY_MAIN = "category.%s.%s".formatted(Rollable.MOD_ID, Rollable.MOD_ID);
-    private static final String CATEGORY_MOVEMENT = "category.%s.%s.movement".formatted(Rollable.MOD_ID, Rollable.MOD_ID);
 
     private static String format(String key) {
         return "key.%s.%s".formatted(Rollable.MOD_ID, key);
@@ -21,13 +19,12 @@ public class RollableKeybindings {
 
     public static final KeyBinding TOGGLE_ENABLED = new KeyBinding(format("toggle_enabled"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, CATEGORY_MAIN);
     public static final KeyBinding OPEN_CONFIG = new KeyBinding(format("open_config"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
-
-    public static final KeyBinding PITCH_UP = new KeyBinding(format("pitch_up"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MOVEMENT);
-    public static final KeyBinding PITCH_DOWN = new KeyBinding(format("pitch_down"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MOVEMENT);
-    public static final KeyBinding YAW_LEFT = new KeyBinding(format("yaw_left"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_A, CATEGORY_MOVEMENT);
-    public static final KeyBinding YAW_RIGHT = new KeyBinding(format("yaw_right"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_D, CATEGORY_MOVEMENT);
-    public static final KeyBinding ROLL_LEFT = new KeyBinding(format("roll_left"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MOVEMENT);
-    public static final KeyBinding ROLL_RIGHT = new KeyBinding(format("roll_right"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MOVEMENT);
+    public static final KeyBinding PITCH_UP = new KeyBinding(format("pitch_up"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
+    public static final KeyBinding PITCH_DOWN = new KeyBinding(format("pitch_down"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
+    public static final KeyBinding YAW_LEFT = new KeyBinding(format("yaw_left"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_A, CATEGORY_MAIN);
+    public static final KeyBinding YAW_RIGHT = new KeyBinding(format("yaw_right"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_D, CATEGORY_MAIN);
+    public static final KeyBinding ROLL_LEFT = new KeyBinding(format("roll_left"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
+    public static final KeyBinding ROLL_RIGHT = new KeyBinding(format("roll_right"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY_MAIN);
 
     public static final List<KeyBinding> ALL = List.of(
             TOGGLE_ENABLED,
@@ -39,17 +36,6 @@ public class RollableKeybindings {
             ROLL_LEFT,
             ROLL_RIGHT
     );
-
-    public static final InputContext CONTEXT = new InputContext(RollableClient.FALL_FLYING_GROUP);
-
-    static {
-        CONTEXT.addKeyBinding(PITCH_UP);
-        CONTEXT.addKeyBinding(PITCH_DOWN);
-        CONTEXT.addKeyBinding(YAW_LEFT);
-        CONTEXT.addKeyBinding(YAW_RIGHT);
-        CONTEXT.addKeyBinding(ROLL_LEFT);
-        CONTEXT.addKeyBinding(ROLL_RIGHT);
-    }
 
     public static void clientTick(MinecraftClient client) {
         while (TOGGLE_ENABLED.wasPressed()) {

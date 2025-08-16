@@ -33,6 +33,8 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
+    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
@@ -40,6 +42,8 @@ dependencies {
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
 
     modImplementation "maven.modrinth:jupiter:ZmYt4jjp"
+
+    modImplementation "maven.modrinth:flightassistant:xfgfisIh"
 }
 
 processResources {
