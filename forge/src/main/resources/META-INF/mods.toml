@@ -28,6 +28,14 @@ side = "BOTH"
 [[dependencies.rollable]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,)"
+versionRange = "[1.20.1,1.20.5)"
+ordering = "NONE"
+side = "BOTH"
+
+
+[[dependencies.rollable]]
+modId = "jupiter"
+mandatory = true
+versionRange = "[2,)"
 ordering = "NONE"
 side = "BOTH"
