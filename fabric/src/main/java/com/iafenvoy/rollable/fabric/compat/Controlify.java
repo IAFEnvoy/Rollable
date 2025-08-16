@@ -1,13 +1,12 @@
 package com.iafenvoy.rollable.fabric.compat;
 
-import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.Rollable;
-import com.iafenvoy.rollable.RollableClient;
+import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.config.RollableClientConfig;
-import com.iafenvoy.rollable.config.Sensitivity;
+import com.iafenvoy.rollable.event.ClientEvents;
 import com.iafenvoy.rollable.event.RollEvents;
 import com.iafenvoy.rollable.flight.RollContext;
-import com.iafenvoy.rollable.flight.RotationInstant;
+import com.iafenvoy.rollable.flight.RotateState;
 import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.ControlifyBindApi;
 import dev.isxander.controlify.api.bind.InputBindingSupplier;
@@ -20,7 +19,7 @@ import net.minecraft.text.Text;
 import java.util.Optional;
 
 public class Controlify implements ControlifyEntrypoint {
-    public static final BindContext FALL_FLYING = new BindContext(Rollable.id("fall_flying"), client -> RollableClient.isFallFlying());
+    public static final BindContext FALL_FLYING = new BindContext(Rollable.id("fall_flying"), client -> ClientEvents.isFallFlying());
 
     public static InputBindingSupplier PITCH_UP;
     public static InputBindingSupplier PITCH_DOWN;
@@ -29,11 +28,11 @@ public class Controlify implements ControlifyEntrypoint {
     public static InputBindingSupplier YAW_LEFT;
     public static InputBindingSupplier YAW_RIGHT;
 
-    private RotationInstant applyToRotation(RotationInstant rotationDelta, RollContext context) {
+    private RotateState applyToRotation(RotateState rotationDelta, RollContext context) {
         Optional<ControllerEntity> perhapsController = ControlifyApi.get().getCurrentController();
         if (perhapsController.isPresent()) {
             ControllerEntity controller = perhapsController.get();
-            Sensitivity sensitivity = RollableClientConfig.INSTANCE.sensitivity.controller.getValue();
+            RotateState sensitivity = RollableClientConfig.INSTANCE.sensitivity.controller.getValue();
 
             if (PITCH_UP.on(controller) == null) return rotationDelta;
 
@@ -43,9 +42,9 @@ public class Controlify implements ControlifyEntrypoint {
             double yawAxis = YAW_RIGHT.on(controller).analogueNow() - YAW_LEFT.on(controller).analogueNow();
             double rollAxis = ROLL_RIGHT.on(controller).analogueNow() - ROLL_LEFT.on(controller).analogueNow();
 
-            pitchAxis *= multiplier * sensitivity.pitch;
-            yawAxis *= multiplier * sensitivity.yaw;
-            rollAxis *= multiplier * sensitivity.roll;
+            pitchAxis *= multiplier * sensitivity.pitch();
+            yawAxis *= multiplier * sensitivity.yaw();
+            rollAxis *= multiplier * sensitivity.roll();
 
             return rotationDelta.add(pitchAxis, yawAxis, rollAxis);
         }
@@ -101,10 +100,10 @@ public class Controlify implements ControlifyEntrypoint {
                 .addKeyCorrelation(RollableKeybindings.YAW_RIGHT)
         );
 
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context.useModifier(this::applyToRotation), RollableClient::isFallFlying);
+        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context.useModifier(this::applyToRotation), ClientEvents::isFallFlying);
 
         ControlifyEvents.LOOK_INPUT_MODIFIER.register(event -> {
-            if (RollableClient.isFallFlying()) event.lookInput().zero();
+            if (ClientEvents.isFallFlying()) event.lookInput().zero();
         });
     }
 

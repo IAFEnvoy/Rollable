@@ -1,52 +1,94 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.flight.RollContext;
-import com.iafenvoy.rollable.config.Sensitivity;
 import com.iafenvoy.rollable.event.RollEvents;
-import com.iafenvoy.rollable.flight.RotationModifiers;
-import com.iafenvoy.rollable.mixin.roll.PlayerEntityMixin;
-import com.iafenvoy.rollable.flight.RotationInstant;
+import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RotateState;
+import com.iafenvoy.rollable.util.RollEntity;
+import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
+public abstract class ClientPlayerEntityMixin extends PlayerEntity implements RollEntity {
     @Shadow
     public float renderYaw;
     @Shadow
     public float lastRenderYaw;
-
-    @Override
     @Unique
-    protected void rollable$baseTickTail2() {
-        this.rollable$setRolling(RollEvents.SHOULD_ROLL.invoker().shouldRoll());
+    protected boolean rollable$isRolling;
+    @Unique
+    protected float rollable$prevRoll;
+    @Unique
+    protected float rollable$roll;
+
+    public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+        super(world, pos, yaw, gameProfile);
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void tickTail(CallbackInfo ci) {
+        this.rollable$isRolling = RollEvents.SHOULD_ROLL.invoker().shouldRoll();
+        this.rollable$prevRoll = this.rollable$getRoll();
+        if (!this.rollable$isRolling()) this.rollable$setRoll(0.0f);
     }
 
     @Override
-    public void rollable$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
-        RotationInstant rotDelta = new RotationInstant(pitch, yaw, roll);
+    public boolean rollable$isRolling() {
+        return this.rollable$isRolling;
+    }
+
+    @Override
+    public float rollable$getRoll() {
+        return this.rollable$roll;
+    }
+
+    @Override
+    public float rollable$getRoll(float tickDelta) {
+        if (tickDelta == 1.0f) return this.rollable$getRoll();
+        return MathHelper.lerp(tickDelta, this.rollable$prevRoll, this.rollable$getRoll());
+    }
+
+    @Override
+    public void rollable$setRoll(float roll) {
+        if (!Float.isFinite(roll)) {
+            Util.error("Invalid entity rotation: " + roll + ", discarding.");
+            return;
+        }
+        float lastRoll = this.rollable$getRoll();
+        this.rollable$roll = roll;
+
+        if (roll < -90 && lastRoll > 90) this.rollable$prevRoll -= 360;
+        else if (roll > 90 && lastRoll < -90) this.rollable$prevRoll += 360;
+    }
+
+    @Override
+    public void rollable$changeElytraLook(double pitch, double yaw, double roll, RotateState state, double mouseDelta) {
+        RotateState rotDelta = new RotateState(pitch, yaw, roll);
         float currentRoll = this.rollable$getRoll();
         double pitch1 = this.getPitch();
         double yaw1 = this.getYaw();
-        RotationInstant currentRotation = new RotationInstant(pitch1, yaw1, currentRoll);
+        RotateState currentRotation = new RotateState(pitch1, yaw1, currentRoll);
         RollContext context = new RollContext(currentRotation, rotDelta, mouseDelta);
 
-        context.useModifier(RotationModifiers.fixNaN());
         RollEvents.EARLY_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
-        context.useModifier(RotationModifiers.fixNaN());
-        context.useModifier((rotation, ctx) -> rotation.applySensitivity(sensitivity));
-        context.useModifier(RotationModifiers.fixNaN());
+        context.useModifier((rotation, ctx) -> rotation.multiply(state));
         RollEvents.LATE_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
-        context.useModifier(RotationModifiers.fixNaN());
 
         rotDelta = context.getRotationDelta();
-
         this.rollable$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
     }
 
@@ -63,7 +105,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
         left.rotateX(-Math.toRadians(currentPitch));
         left.rotateY(-Math.toRadians(currentYaw + 180));
 
-
         // Apply pitch
         facing.rotateAxis(-0.15 * Math.toRadians(pitch), left.x, left.y, left.z);
 
@@ -74,7 +115,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 
         // Apply roll
         left.rotateAxis(0.15 * Math.toRadians(roll), facing.x, facing.y, facing.z);
-
 
         // Extract new pitch, yaw, and roll
         double newPitch = Math.toDegrees(-Math.asin(facing.y));

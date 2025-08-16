@@ -7,7 +7,8 @@ import com.iafenvoy.jupiter.config.entry.SeparatorEntry;
 import com.iafenvoy.jupiter.interfaces.IConfigEntry;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
-import com.iafenvoy.rollable.config.entry.SensitivityEntry;
+import com.iafenvoy.rollable.config.entry.RotateStateEntry;
+import com.iafenvoy.rollable.flight.RotateState;
 import com.iafenvoy.rollable.math.ExpressionParser;
 import net.minecraft.util.Identifier;
 
@@ -54,9 +55,9 @@ public class RollableClientConfig extends AutoInitConfigContainer {
     }
 
     public static class SensitivityConfig extends AutoInitConfigCategoryBase {
-        public final IConfigEntry<Sensitivity> cameraSmoothing = new SensitivityEntry(format("advanced", "cameraSmoothing"), 1.0, 2.5, 1.0).json("cameraSmoothing");
-        public final IConfigEntry<Sensitivity> desktop = new SensitivityEntry(format("advanced", "desktop")).json("desktop");
-        public final IConfigEntry<Sensitivity> controller = new SensitivityEntry(format("advanced", "controller")).json("controller");
+        public final IConfigEntry<RotateState> cameraSmoothing = new RotateStateEntry(format("advanced", "cameraSmoothing"), 1.0, 2.5, 1.0).json("cameraSmoothing");
+        public final IConfigEntry<RotateState> desktop = new RotateStateEntry(format("advanced", "desktop"), 1, 0.4, 1).json("desktop");
+        public final IConfigEntry<RotateState> controller = new RotateStateEntry(format("advanced", "controller"), 1, 0.4, 1).json("controller");
 
         public SensitivityConfig() {
             super("sensitivity", format("sensitivity", "title"));

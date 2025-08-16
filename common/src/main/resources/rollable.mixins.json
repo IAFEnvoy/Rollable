@@ -5,16 +5,13 @@
   "minVersion": "0.8",
   "client": [
     "CameraMixin",
+    "ClientPlayerEntityMixin",
     "GameRendererMixin",
     "MouseMixin",
     "PlayerEntityRendererMixin",
-    "ClientPlayerEntityMixin"
+    "compat.CameraSystemMixin"
   ],
   "mixins": [
-    "compat.CameraSystemMixin",
-    "roll.EntityMixin",
-    "roll.LivingEntityMixin",
-    "roll.PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

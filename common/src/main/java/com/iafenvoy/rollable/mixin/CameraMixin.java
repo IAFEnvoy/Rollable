@@ -2,7 +2,7 @@ package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.util.RollCamera;
 import com.iafenvoy.rollable.util.RollEntity;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.fabricmc.api.EnvType;
@@ -59,11 +59,10 @@ public abstract class CameraMixin implements RollCamera {
 
     @WrapWithCondition(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 0))
     private boolean rollable$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
-        if (this.rollable$isRolling) {
+        if (this.rollable$isRolling)
             this.rollable$tempRoll.set(((RollEntity) this.focusedEntity).rollable$getRoll(tickDelta.get()));
-        } else {
+        else
             this.rollable$tempRoll.set(MathHelper.lerp(tickDelta.get(), this.rollable$lastRollBack, this.rollable$rollBack));
-        }
         return true;
     }
 

@@ -6,77 +6,19 @@ import com.iafenvoy.rollable.compat.FlightAssistantIntegration;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
 import com.iafenvoy.rollable.config.entry.ExtendedTextFieldWidgetBuilder;
-import com.iafenvoy.rollable.config.entry.SensitivityEntry;
-import com.iafenvoy.rollable.config.entry.dialog.SensitivityWidgetBuilder;
-import com.iafenvoy.rollable.event.RollEvents;
-import com.iafenvoy.rollable.flight.RotationInstant;
-import com.iafenvoy.rollable.flight.RotationModifiers;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.SmoothUtil;
+import com.iafenvoy.rollable.config.entry.RotateStateEntry;
+import com.iafenvoy.rollable.config.entry.dialog.RotateStateWidgetBuilder;
+import com.iafenvoy.rollable.event.ClientEvents;
 
 public class RollableClient {
     public static boolean FLIGHT_ASSISTANT_LOADED = false;
 
-    public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
-    public static final SmoothUtil YAW_SMOOTHER = new SmoothUtil();
-    public static final SmoothUtil ROLL_SMOOTHER = new SmoothUtil();
-
     public static void init() {
-        //Register Config
         WidgetBuilderManager.register(ExpressionParserEntry.TYPE, ExtendedTextFieldWidgetBuilder::new);
-        WidgetBuilderManager.register(SensitivityEntry.TYPE, config -> new SensitivityWidgetBuilder((SensitivityEntry) config));
+        WidgetBuilderManager.register(RotateStateEntry.TYPE, config -> new RotateStateWidgetBuilder((RotateStateEntry) config));
         ConfigManager.getInstance().registerConfigHandler(RollableClientConfig.INSTANCE);
 
-        if(FLIGHT_ASSISTANT_LOADED) FlightAssistantIntegration.init();
-
-        //Events
-        RollEvents.SHOULD_ROLL.register(RollableClient::isFallFlying);
-        // Keyboard modifiers
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context.useModifier(RotationModifiers.buttonControls(1800)), RollEvents.SHOULD_ROLL.invoker()::shouldRoll);
-        // Mouse modifiers, including swapping axes
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier((rotationInstant, ctx) -> {
-                            double pitch = rotationInstant.pitch();
-                            double yaw = rotationInstant.yaw();
-                            double roll = rotationInstant.roll();
-
-                            if (!RollableClientConfig.INSTANCE.generals.switchRollAndYaw.getValue()) {
-                                double temp = yaw;
-                                yaw = roll;
-                                roll = temp;
-                            }
-                            if (RollableClientConfig.INSTANCE.generals.invertPitch.getValue())
-                                pitch *= -1;
-
-                            return new RotationInstant(pitch, yaw, roll);
-                        }),
-                RollEvents.SHOULD_ROLL.invoker()::shouldRoll);
-        // Generic movement modifiers, banking and such
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(RotationModifiers::applyControlSurfaceEfficacy, RollableClientConfig.INSTANCE.banking.simulateControlSurfaceEfficacy::getValue)
-                        .useModifier(RotationModifiers.smoothing(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, RollableClientConfig.INSTANCE.sensitivity.cameraSmoothing.getValue()))
-                        .useModifier(RotationModifiers::banking, RollableClientConfig.INSTANCE.banking.enabled::getValue)
-                        .useModifier(RotationModifiers::reorient, RollableClientConfig.INSTANCE.banking.automaticRighting::getValue),
-                RollEvents.SHOULD_ROLL.invoker()::shouldRoll);
-    }
-
-    public static void clearValues() {
-        PITCH_SMOOTHER.clear();
-        YAW_SMOOTHER.clear();
-        ROLL_SMOOTHER.clear();
-    }
-
-    public static boolean isFallFlying() {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player == null) return false;
-        if (RollableClientConfig.INSTANCE.generals.disableWhenSubmerged.getValue() && player.isSubmergedInWater())
-            return false;
-        return player.isFallFlying();
-    }
-
-    public static void clientTick(MinecraftClient client) {
-        if (!isFallFlying()) clearValues();
-        RollableKeybindings.clientTick(client);
+        ClientEvents.registerEvents();
+        if (FLIGHT_ASSISTANT_LOADED) FlightAssistantIntegration.init();
     }
 }

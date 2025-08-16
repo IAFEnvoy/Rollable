@@ -1,15 +1,13 @@
 package com.iafenvoy.rollable.util;
 
-import com.iafenvoy.rollable.config.Sensitivity;
+import com.iafenvoy.rollable.flight.RotateState;
 
 public interface RollEntity {
-    void rollable$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta);
+    void rollable$changeElytraLook(double pitch, double yaw, double roll, RotateState state, double mouseDelta);
 
     void rollable$changeElytraLook(float pitch, float yaw, float roll);
 
     boolean rollable$isRolling();
-
-    void rollable$setRolling(boolean rolling);
 
     float rollable$getRoll();
 

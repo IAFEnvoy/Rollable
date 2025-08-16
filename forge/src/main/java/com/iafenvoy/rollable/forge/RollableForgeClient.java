@@ -2,8 +2,8 @@ package com.iafenvoy.rollable.forge;
 
 import com.iafenvoy.jupiter.render.screen.ClientConfigScreen;
 import com.iafenvoy.rollable.RollableKeybindings;
-import com.iafenvoy.rollable.RollableClient;
 import com.iafenvoy.rollable.config.RollableClientConfig;
+import com.iafenvoy.rollable.event.ClientEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -31,7 +31,7 @@ public class RollableForgeClient {
     public static class ForgeEvents {
         @SubscribeEvent
         public static void clientTick(TickEvent.ClientTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) RollableClient.clientTick(MinecraftClient.getInstance());
+            if (event.phase == TickEvent.Phase.END) ClientEvents.clientTick(MinecraftClient.getInstance());
         }
     }
 }

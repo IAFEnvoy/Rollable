@@ -16,4 +16,4 @@ Down to 1.16.5 will be ported after fully tested.
 
 ## Capabilities
 
-This mod integrated supports for `Controlity` and `Flight Assistant`.
+This mod integrated supports for `Camera Overhaul`, `Controlity` and `Flight Assistant`.

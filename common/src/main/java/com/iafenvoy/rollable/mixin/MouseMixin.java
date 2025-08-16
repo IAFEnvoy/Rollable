@@ -1,8 +1,8 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.util.RollEntity;
 import com.iafenvoy.rollable.config.RollableClientConfig;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.iafenvoy.rollable.util.RollEntity;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
 import net.fabricmc.api.EnvType;
@@ -40,9 +40,8 @@ public abstract class MouseMixin {
 
     @Inject(method = "updateMouse", at = @At(value = "RETURN", ordinal = 0))
     private void rollable$maintainMouseMomentum(CallbackInfo ci, @Share("mouseDelta") LocalDoubleRef mouseDeltaRef) {
-        if (this.client.player != null && !this.client.isPaused()) {
+        if (this.client.player != null && !this.client.isPaused())
             this.rollable$updateMouse(this.client.player, 0, 0, mouseDeltaRef.get());
-        }
     }
 
     @WrapWithCondition(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
@@ -53,36 +52,26 @@ public abstract class MouseMixin {
     @Unique
     public boolean rollable$updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, double mouseDelta) {
         RollEntity rollPlayer = (RollEntity) player;
-
         if (rollPlayer.rollable$isRolling()) {
-
             if (RollableClientConfig.INSTANCE.generals.momentumBasedMouse.getValue()) {
-
                 // add the mouse movement to the current vector and normalize if needed
                 this.rollable$mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
-                if (this.rollable$mouseTurnVec.lengthSquared() > 1.0) {
-                    this.rollable$mouseTurnVec.normalize();
-                }
+                if (this.rollable$mouseTurnVec.lengthSquared() > 1.0) this.rollable$mouseTurnVec.normalize();
                 Vector2d readyTurnVec = new Vector2d(this.rollable$mouseTurnVec);
-
                 // check if the vector is within the deadzone
                 double deadzone = RollableClientConfig.INSTANCE.generals.momentumMouseDeadzone.getValue();
                 if (readyTurnVec.lengthSquared() < deadzone * deadzone) readyTurnVec.zero();
-
                 // enlarge the vector and apply it to the camera
                 readyTurnVec.mul(1200 * (float) mouseDelta);
                 rollPlayer.rollable$changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
 
             } else {
-
                 // if we are not using a momentum based mouse, we can reset it and apply the values directly
                 this.rollable$mouseTurnVec.zero();
                 rollPlayer.rollable$changeElytraLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             }
-
             return true;
         }
-
         this.rollable$mouseTurnVec.zero();
         return false;
     }

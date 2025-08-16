@@ -1,6 +1,8 @@
 package com.iafenvoy.rollable.mixin.compat;
 
 import com.iafenvoy.rollable.util.RollEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,6 +11,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+@Environment(EnvType.CLIENT)
 @Pseudo
 @Mixin(targets = "mirsario.cameraoverhaul.common.systems.CameraSystem")
 public abstract class CameraSystemMixin {
@@ -18,53 +21,25 @@ public abstract class CameraSystemMixin {
     }
 
     @Dynamic
-    @ModifyArg(
-            method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;VerticalVelocityPitchOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"
-            ),
-            index = 5
-    )
+    @ModifyArg(method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V", at = @At(value = "INVOKE", target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;VerticalVelocityPitchOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"), index = 5)
     private float rollable$cancelVerticalVelocityPitchOffset(float original) {
         return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
-    @ModifyArg(
-            method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;ForwardVelocityPitchOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"
-            ),
-            index = 5
-    )
+    @ModifyArg(method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V", at = @At(value = "INVOKE", target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;ForwardVelocityPitchOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"), index = 5)
     private float rollable$cancelForwardVelocityPitchOffset(float original) {
         return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
-    @ModifyArg(
-            method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;YawDeltaRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFFF)V"
-            ),
-            index = 5
-    )
+    @ModifyArg(method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V", at = @At(value = "INVOKE", target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;YawDeltaRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFFF)V"), index = 5)
     private float rollable$cancelYawDeltaRollOffset(float original) {
         return this.rollable$allowModifications() ? original : 0f;
     }
 
     @Dynamic
-    @ModifyArg(
-            method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;StrafingRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"
-            ),
-            index = 5
-    )
+    @ModifyArg(method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V", at = @At(value = "INVOKE", target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;StrafingRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"), index = 5)
     private float rollable$cancelStrafingRollOffset(float original) {
         return this.rollable$allowModifications() ? original : 0f;
     }

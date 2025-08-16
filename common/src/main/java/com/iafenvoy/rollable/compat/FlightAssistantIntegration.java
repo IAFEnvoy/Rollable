@@ -8,7 +8,7 @@ public class FlightAssistantIntegration {
     private static FlightAssistantComputer rollComputer;
 
     public static void init() {
-        Rollable.LOGGER.info("Initializing support for Flight Assistant");
+        Rollable.LOGGER.info("[Rollable] Initializing support for Flight Assistant");
         ComputerRegistrationCallback.EVENT.register((bus, registrar) -> registrar.accept(FlightAssistantComputer.ID, rollComputer = new FlightAssistantComputer(bus)));
         RollSourceRegistrationCallback.EVENT.register(rollSource -> rollSource.accept(rollComputer));
     }

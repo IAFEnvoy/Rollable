@@ -3,31 +3,30 @@ package com.iafenvoy.rollable.flight;
 import java.util.function.BooleanSupplier;
 
 public class RollContext {
-    private final RotationInstant currentRotation;
-    private RotationInstant rotationDelta;
+    private final RotateState currentRotation;
+    private RotateState rotationDelta;
     private final double renderDelta;
 
-    public RollContext(RotationInstant currentRotation, RotationInstant rotationDelta, double renderDelta) {
-        this.currentRotation = currentRotation;
-        this.rotationDelta = rotationDelta;
+    public RollContext(RotateState currentRotation, RotateState rotationDelta, double renderDelta) {
+        this.currentRotation = currentRotation.fixNaN();
+        this.rotationDelta = rotationDelta.fixNaN();
         this.renderDelta = renderDelta;
     }
 
     public RollContext useModifier(ConfiguresRotation modifier, BooleanSupplier condition) {
-        this.rotationDelta = this.rotationDelta.useModifier(rotationInstant -> modifier.apply(rotationInstant, this), condition);
+        if (condition.getAsBoolean()) this.rotationDelta = modifier.apply(this.rotationDelta, this).fixNaN();
         return this;
     }
 
     public RollContext useModifier(ConfiguresRotation modifier) {
-        this.rotationDelta = this.rotationDelta.useModifier(rotationInstant -> modifier.apply(rotationInstant, this));
-        return this;
+        return this.useModifier(modifier, () -> true);
     }
 
-    public RotationInstant getCurrentRotation() {
+    public RotateState getCurrentRotation() {
         return this.currentRotation;
     }
 
-    public RotationInstant getRotationDelta() {
+    public RotateState getRotationDelta() {
         return this.rotationDelta;
     }
 
@@ -37,6 +36,6 @@ public class RollContext {
 
     @FunctionalInterface
     public interface ConfiguresRotation {
-        RotationInstant apply(RotationInstant rotationInstant, RollContext context);
+        RotateState apply(RotateState rotationInstant, RollContext context);
     }
 }

@@ -47,7 +47,8 @@ public class ExpressionParser extends Parser {
     public Expression build() {
         this.nextChar();
         Expression x = this.parseExpression();
-        if (this.pos < this.string.length()) throw new RuntimeException("Unexpected character '" + this.ch + "' at position " + this.pos);
+        if (this.pos < this.string.length())
+            throw new RuntimeException("Unexpected character '" + this.ch + "' at position " + this.pos);
         this.compiled = x;
         return x;
     }
