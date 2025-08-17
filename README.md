@@ -12,7 +12,7 @@ Down to 1.16.5 will be ported after fully tested.
 - You can make elytra flies like flying a plane.
 - In your view everyone share the same configuration.
 - Fully client side! Other players will see you as a normal player without this mod installed.
-- (Planned) Entrypoints for developers to register their own configurations.
+- Events for developers to register their own configurations.
 
 ## Capabilities
 

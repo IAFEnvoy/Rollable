@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.math;
+package com.iafenvoy.rollable.expression;
 
 public abstract class Parser {
     protected final String string;

@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.math;
+package com.iafenvoy.rollable.expression;
 
 import java.util.Map;
 

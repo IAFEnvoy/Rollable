@@ -8,8 +8,8 @@ import com.iafenvoy.jupiter.interfaces.IConfigEntry;
 import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.config.entry.ExpressionParserEntry;
 import com.iafenvoy.rollable.config.entry.RotateStateEntry;
+import com.iafenvoy.rollable.expression.ExpressionParser;
 import com.iafenvoy.rollable.flight.RotateState;
-import com.iafenvoy.rollable.math.ExpressionParser;
 import net.minecraft.util.Identifier;
 
 public class RollableClientConfig extends AutoInitConfigContainer {

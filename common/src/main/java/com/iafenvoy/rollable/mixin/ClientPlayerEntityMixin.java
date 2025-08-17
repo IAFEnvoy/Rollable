@@ -1,9 +1,9 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.event.RollEvents;
+import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.flight.RotateState;
-import com.iafenvoy.rollable.util.RollEntity;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

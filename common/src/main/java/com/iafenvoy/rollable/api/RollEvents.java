@@ -1,5 +1,6 @@
-package com.iafenvoy.rollable.event;
+package com.iafenvoy.rollable.api;
 
+import com.iafenvoy.rollable.event.Event;
 import com.iafenvoy.rollable.flight.RollContext;
 
 public interface RollEvents {

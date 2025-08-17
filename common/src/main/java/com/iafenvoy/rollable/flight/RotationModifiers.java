@@ -2,7 +2,7 @@ package com.iafenvoy.rollable.flight;
 
 import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.config.RollableClientConfig;
-import com.iafenvoy.rollable.math.Expression;
+import com.iafenvoy.rollable.expression.Expression;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.SmoothUtil;

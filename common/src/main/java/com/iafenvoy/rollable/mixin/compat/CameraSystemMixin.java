@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin.compat;
 
-import com.iafenvoy.rollable.util.RollEntity;
+import com.iafenvoy.rollable.api.RollEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;

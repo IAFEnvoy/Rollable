@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.util.RollCamera;
+import com.iafenvoy.rollable.api.RollCamera;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;

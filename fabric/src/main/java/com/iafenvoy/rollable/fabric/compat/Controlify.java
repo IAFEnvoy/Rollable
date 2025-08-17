@@ -4,7 +4,7 @@ import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.event.ClientEvents;
-import com.iafenvoy.rollable.event.RollEvents;
+import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.flight.RotateState;
 import dev.isxander.controlify.api.ControlifyApi;

@@ -1,6 +1,7 @@
 package com.iafenvoy.rollable.event;
 
 import com.iafenvoy.rollable.RollableKeybindings;
+import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.flight.RotateState;
 import com.iafenvoy.rollable.flight.RotationModifiers;

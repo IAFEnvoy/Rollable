@@ -1,7 +1,7 @@
 package com.iafenvoy.rollable.compat;
 
 import com.iafenvoy.rollable.Rollable;
-import com.iafenvoy.rollable.util.RollEntity;
+import com.iafenvoy.rollable.api.RollEntity;
 import net.minecraft.util.Identifier;
 import ru.octol1ttle.flightassistant.api.autoflight.roll.RollSource;
 import ru.octol1ttle.flightassistant.api.computer.Computer;

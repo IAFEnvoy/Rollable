@@ -5,8 +5,8 @@ import com.iafenvoy.jupiter.config.type.ConfigType;
 import com.iafenvoy.jupiter.config.type.SingleConfigType;
 import com.iafenvoy.jupiter.interfaces.IConfigEntry;
 import com.iafenvoy.jupiter.interfaces.ITextFieldConfig;
-import com.iafenvoy.rollable.math.ExpressionParser;
-import com.iafenvoy.rollable.math.Parser;
+import com.iafenvoy.rollable.expression.ExpressionParser;
+import com.iafenvoy.rollable.expression.Parser;
 import com.mojang.serialization.Codec;
 
 public class ExpressionParserEntry extends BaseEntry<ExpressionParser> implements ITextFieldConfig {

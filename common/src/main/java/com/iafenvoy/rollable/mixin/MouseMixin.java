@@ -1,7 +1,7 @@
 package com.iafenvoy.rollable.mixin;
 
+import com.iafenvoy.rollable.api.RollEntity;
 import com.iafenvoy.rollable.config.RollableClientConfig;
-import com.iafenvoy.rollable.util.RollEntity;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;

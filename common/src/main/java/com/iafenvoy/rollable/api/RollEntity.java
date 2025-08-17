@@ -1,4 +1,4 @@
-package com.iafenvoy.rollable.util;
+package com.iafenvoy.rollable.api;
 
 import com.iafenvoy.rollable.flight.RotateState;
 
