@@ -1,8 +1,8 @@
 # Rollable
 
 This is a visualize fork of [Do a Barrel Roll](https://github.com/enjarai/do-a-barrel-roll)
-and [Rolling Down in the Deep](https://github.com/enjarai/rolling-down-in-the-deep).
-Make it to a client side only mod, optimize the GUI and flying logic.
+and [Rolling Down in the Deep](https://github.com/enjarai/rolling-down-in-the-deep). Make it to a client side only mod,
+optimize the GUI and flying logic.
 
 Configure in mod menu or use the `open config` hotkey.
 
@@ -11,6 +11,7 @@ Down to 1.16.5 will be ported after fully tested.
 ## Features
 
 - You can make elytra flies like flying a plane.
+- You can swim with a free view.
 - In your view everyone share the same configuration.
 - Fully client side! Other players will see you as a normal player without this mod installed.
 - Events for developers to register their own configurations.
