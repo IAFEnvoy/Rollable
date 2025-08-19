@@ -1,9 +1,10 @@
 package com.iafenvoy.rollable.event;
 
+import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableKeybindings;
-import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RollProcessGroup;
 import com.iafenvoy.rollable.flight.RotateState;
 import com.iafenvoy.rollable.flight.modifier.RotationModifiers;
 import com.iafenvoy.rollable.flight.modifier.StrafeRollModifiers;
@@ -12,41 +13,33 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.SmoothUtil;
 
 public class ClientEvents {
-    private static final SmoothGroup ELYTRA_FLY = new SmoothGroup(), SWIMMING = new SmoothGroup();
+    private static final RollProcessGroup ELYTRA_GROUP = RollProcessGroup.get(Rollable.id("elytra")), SWIMMING_GROUP = RollProcessGroup.get(Rollable.id("swimming"));
+    private static final SmoothGroup ELYTRA = new SmoothGroup(), SWIMMING = new SmoothGroup();
 
     public static void registerEvents() {
         // For Elytra Rolling
-        RollEvents.SHOULD_ROLL.register(() -> RollEvents.SHOULD_FLYING_ROLL.invoker().getAsBoolean());
-        RollEvents.SHOULD_FLYING_ROLL.register(ClientEvents::isFallFlying);
+        ELYTRA_GROUP.registerEnablePredicate(ClientEvents::isFallFlying);
         // Keyboard modifiers
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context.useModifier(RotationModifiers.buttonControls(1800)), RollEvents.SHOULD_FLYING_ROLL.invoker());
+        ELYTRA_GROUP.registerBeforeModifier(context -> context.useModifier(RotationModifiers.buttonControls(1800)));
         // Mouse modifiers, including swapping axes
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context.useModifier(RotationModifiers::configureRotation), RollEvents.SHOULD_FLYING_ROLL.invoker());
+        ELYTRA_GROUP.registerBeforeModifier(context -> context.useModifier(RotationModifiers::configureRotation));
         // Generic movement modifiers, banking and such
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(RotationModifiers::applyControlSurfaceEfficacy, RollableClientConfig.INSTANCE.banking.simulateControlSurfaceEfficacy::getValue)
-                        .useModifier(ELYTRA_FLY.smoothing(RollableClientConfig.INSTANCE.sensitivity.cameraSmoothing.getValue()))
-                        .useModifier(RotationModifiers::banking, RollableClientConfig.INSTANCE.banking.enabled::getValue)
-                        .useModifier(RotationModifiers::reorient, RollableClientConfig.INSTANCE.banking.automaticRighting::getValue),
-                RollEvents.SHOULD_FLYING_ROLL.invoker());
-
+        ELYTRA_GROUP.registerAfterModifier(context -> context
+                .useModifier(RotationModifiers::applyControlSurfaceEfficacy, RollableClientConfig.INSTANCE.banking.simulateControlSurfaceEfficacy::getValue)
+                .useModifier(ELYTRA.smoothing(RollableClientConfig.INSTANCE.sensitivity.cameraSmoothing.getValue()))
+                .useModifier(RotationModifiers::banking, RollableClientConfig.INSTANCE.banking.enabled::getValue)
+                .useModifier(RotationModifiers::reorient, RollableClientConfig.INSTANCE.banking.automaticRighting::getValue));
         // For Swimming Rolling
-        RollEvents.SHOULD_ROLL.register(() -> RollEvents.SHOULD_SWIMMING_ROLL.invoker().getAsBoolean());
-        RollEvents.SHOULD_SWIMMING_ROLL.register(ClientEvents::isSwimming);
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(StrafeRollModifiers::applyStrafeRoll),
-                () -> RollEvents.SHOULD_SWIMMING_ROLL.invoker().getAsBoolean() && !RollEvents.SHOULD_FLYING_ROLL.invoker().getAsBoolean());
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(RotationModifiers::configureRotation),
-                () -> RollEvents.SHOULD_SWIMMING_ROLL.invoker().getAsBoolean() && !RollEvents.SHOULD_FLYING_ROLL.invoker().getAsBoolean());
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                        .useModifier(SWIMMING.smoothing(RollableClientConfig.INSTANCE.swim.values.getValue())),
-                () -> RollEvents.SHOULD_SWIMMING_ROLL.invoker().getAsBoolean() && !RollEvents.SHOULD_FLYING_ROLL.invoker().getAsBoolean() && RollableClientConfig.INSTANCE.swim.smoothingEnabled.getValue());
+        SWIMMING_GROUP.registerEnablePredicate(ClientEvents::isSwimming);
+        SWIMMING_GROUP.registerBeforeModifier(context -> context.useModifier(StrafeRollModifiers::applyStrafeRoll));
+        SWIMMING_GROUP.registerBeforeModifier(context -> context.useModifier(RotationModifiers::configureRotation));
+        SWIMMING_GROUP.registerAfterModifier(context -> context.useModifier(SWIMMING.smoothing(RollableClientConfig.INSTANCE.swim.values.getValue())));
 
     }
 
     public static void clientTick(MinecraftClient client) {
-        if (!isFallFlying()) ELYTRA_FLY.clear();
+        if (!isFallFlying()) ELYTRA.clear();
+        if (!isSwimming()) SWIMMING.clear();
         RollableKeybindings.clientTick(client);
     }
 

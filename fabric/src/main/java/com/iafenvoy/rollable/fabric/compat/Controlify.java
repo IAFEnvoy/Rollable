@@ -4,8 +4,8 @@ import com.iafenvoy.rollable.Rollable;
 import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.event.ClientEvents;
-import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RollProcessGroup;
 import com.iafenvoy.rollable.flight.RotateState;
 import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.ControlifyBindApi;
@@ -100,8 +100,7 @@ public class Controlify implements ControlifyEntrypoint {
                 .addKeyCorrelation(RollableKeybindings.YAW_RIGHT)
         );
 
-        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context.useModifier(this::applyToRotation), ClientEvents::isFallFlying);
-
+        RollProcessGroup.get(Rollable.id("elytra")).registerAfterModifier(context -> context.useModifier(this::applyToRotation));
         ControlifyEvents.LOOK_INPUT_MODIFIER.register(event -> {
             if (ClientEvents.isFallFlying()) event.lookInput().zero();
         });

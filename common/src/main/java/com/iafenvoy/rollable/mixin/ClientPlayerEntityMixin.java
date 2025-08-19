@@ -1,8 +1,8 @@
 package com.iafenvoy.rollable.mixin;
 
 import com.iafenvoy.rollable.api.RollEntity;
-import com.iafenvoy.rollable.api.RollEvents;
 import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RollProcessGroup;
 import com.iafenvoy.rollable.flight.RotateState;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
@@ -13,6 +13,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,7 +30,8 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
     @Shadow
     public float lastRenderYaw;
     @Unique
-    protected boolean rollable$isRolling;
+    @Nullable
+    protected RollProcessGroup rollable$processGroup;
     @Unique
     protected float rollable$prevRoll;
     @Unique
@@ -41,14 +43,14 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tickTail(CallbackInfo ci) {
-        this.rollable$isRolling = RollEvents.SHOULD_ROLL.invoker().getAsBoolean();
+        this.rollable$processGroup = RollProcessGroup.SHOULD_ROLL.invoker().get();
         this.rollable$prevRoll = this.rollable$getRoll();
         if (!this.rollable$isRolling()) this.rollable$setRoll(0.0f);
     }
 
     @Override
     public boolean rollable$isRolling() {
-        return this.rollable$isRolling;
+        return this.rollable$processGroup != null;
     }
 
     @Override
@@ -76,7 +78,13 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
     }
 
     @Override
-    public void rollable$changeElytraLook(double pitch, double yaw, double roll, RotateState state, double mouseDelta) {
+    @Nullable
+    public RollProcessGroup rollable$getCurrentProcessGroup() {
+        return this.rollable$processGroup;
+    }
+
+    @Override
+    public void rollable$changeLook(double pitch, double yaw, double roll, RotateState state, double mouseDelta) {
         RotateState rotDelta = new RotateState(pitch, yaw, roll);
         float currentRoll = this.rollable$getRoll();
         double pitch1 = this.getPitch();
@@ -84,16 +92,16 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
         RotateState currentRotation = new RotateState(pitch1, yaw1, currentRoll);
         RollContext context = new RollContext(currentRotation, rotDelta, mouseDelta);
 
-        RollEvents.EARLY_CAMERA_MODIFIERS.invoker().accept(context);
+        if (this.rollable$processGroup != null) this.rollable$processGroup.processBeforeModifier(context);
         context.useModifier((rotation, ctx) -> rotation.multiply(state));
-        RollEvents.LATE_CAMERA_MODIFIERS.invoker().accept(context);
+        if (this.rollable$processGroup != null) this.rollable$processGroup.processAfterModifier(context);
 
         rotDelta = context.getRotationDelta();
-        this.rollable$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
+        this.rollable$changeLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
     }
 
     @Override
-    public void rollable$changeElytraLook(float pitch, float yaw, float roll) {
+    public void rollable$changeLook(float pitch, float yaw, float roll) {
         float currentPitch = this.getPitch();
         float currentYaw = this.getYaw();
         float currentRoll = this.rollable$getRoll();

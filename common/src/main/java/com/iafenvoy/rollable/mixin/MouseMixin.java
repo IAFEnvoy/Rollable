@@ -63,12 +63,12 @@ public abstract class MouseMixin {
                 if (readyTurnVec.lengthSquared() < deadzone * deadzone) readyTurnVec.zero();
                 // enlarge the vector and apply it to the camera
                 readyTurnVec.mul(1200 * (float) mouseDelta);
-                rollPlayer.rollable$changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
+                rollPlayer.rollable$changeLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
 
             } else {
                 // if we are not using a momentum based mouse, we can reset it and apply the values directly
                 this.rollable$mouseTurnVec.zero();
-                rollPlayer.rollable$changeElytraLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
+                rollPlayer.rollable$changeLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             }
             return true;
         }
