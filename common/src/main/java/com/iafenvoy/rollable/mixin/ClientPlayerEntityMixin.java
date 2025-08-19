@@ -41,7 +41,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tickTail(CallbackInfo ci) {
-        this.rollable$isRolling = RollEvents.SHOULD_ROLL.invoker().shouldRoll();
+        this.rollable$isRolling = RollEvents.SHOULD_ROLL.invoker().getAsBoolean();
         this.rollable$prevRoll = this.rollable$getRoll();
         if (!this.rollable$isRolling()) this.rollable$setRoll(0.0f);
     }
@@ -84,9 +84,9 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity implements Ro
         RotateState currentRotation = new RotateState(pitch1, yaw1, currentRoll);
         RollContext context = new RollContext(currentRotation, rotDelta, mouseDelta);
 
-        RollEvents.EARLY_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
+        RollEvents.EARLY_CAMERA_MODIFIERS.invoker().accept(context);
         context.useModifier((rotation, ctx) -> rotation.multiply(state));
-        RollEvents.LATE_CAMERA_MODIFIERS.invoker().applyCameraModifiers(context);
+        RollEvents.LATE_CAMERA_MODIFIERS.invoker().accept(context);
 
         rotDelta = context.getRotationDelta();
         this.rollable$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());

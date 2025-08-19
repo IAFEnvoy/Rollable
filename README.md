@@ -1,7 +1,8 @@
 # Rollable
 
-This is a visualize fork of [Do a Barrel Roll](https://github.com/enjarai/do-a-barrel-roll). Make it to a client side
-only mod, optimize the GUI and flying logic.
+This is a visualize fork of [Do a Barrel Roll](https://github.com/enjarai/do-a-barrel-roll)
+and [Rolling Down in the Deep](https://github.com/enjarai/rolling-down-in-the-deep).
+Make it to a client side only mod, optimize the GUI and flying logic.
 
 Configure in mod menu or use the `open config` hotkey.
 

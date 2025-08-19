@@ -36,7 +36,8 @@
   "key.rollable.pitch_up": "俯仰向上",
   "key.rollable.roll_left": "向左翻滚",
   "key.rollable.roll_right": "向右翻滚",
-  "key.rollable.toggle_enabled": "切换 Rollable 启用状态",
+  "key.rollable.toggle_enable_elytra": "切换鞘翅飞行中的启用状态",
+  "key.rollable.toggle_enable_swimming": "切换游泳中的启用状态",
   "key.rollable.yaw_left": "向左偏航",
   "key.rollable.yaw_right": "向右偏航"
 }

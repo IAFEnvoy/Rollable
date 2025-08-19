@@ -16,6 +16,7 @@ public class RollableClientConfig extends AutoInitConfigContainer {
     private static final String CONFIG_PATH = "./config/%s_client.json".formatted(Rollable.MOD_ID);
     public static final RollableClientConfig INSTANCE = new RollableClientConfig();
     public final Generals generals = new Generals();
+    public final Swim swim = new Swim();
     public final Banking banking = new Banking();
     public final SensitivityConfig sensitivity = new SensitivityConfig();
     public final AdvancedConfig advanced = new AdvancedConfig();
@@ -39,6 +40,20 @@ public class RollableClientConfig extends AutoInitConfigContainer {
 
         public Generals() {
             super("generals", format("generals", "title"));
+        }
+    }
+
+    public static class Swim extends AutoInitConfigCategoryBase {
+        public final IConfigEntry<Boolean> enabled = new BooleanEntry(format("swim", "enabled"), true).json("enabled");
+        public final SeparatorEntry s = new SeparatorEntry();
+        public final IConfigEntry<Double> strafeRollStrength = new DoubleEntry(format("swim", "strafeRollStrength"), 2.5, 0, Integer.MAX_VALUE).json("strafeRollStrength");
+        public final IConfigEntry<Double> strafeYawStrength = new DoubleEntry(format("swim", "strafeYawStrength"), 1, 0, Integer.MAX_VALUE).json("strafeYawStrength");
+        public final IConfigEntry<Boolean> smoothingEnabled = new BooleanEntry(format("swim", "smoothingEnabled"), true).json("smoothingEnabled");
+        public final IConfigEntry<Boolean> strafeSmoothingEnabled = new BooleanEntry(format("swim", "strafeSmoothingEnabled"), true).json("strafeSmoothingEnabled");
+        public final IConfigEntry<RotateState> values = new RotateStateEntry(format("swim", "values"), .5, .5, .5).json("values");
+
+        public Swim() {
+            super("swim", format("swim", "title"));
         }
     }
 

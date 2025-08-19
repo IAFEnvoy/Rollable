@@ -1,8 +1,10 @@
-package com.iafenvoy.rollable.flight;
+package com.iafenvoy.rollable.flight.modifier;
 
 import com.iafenvoy.rollable.RollableKeybindings;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.iafenvoy.rollable.expression.Expression;
+import com.iafenvoy.rollable.flight.RollContext;
+import com.iafenvoy.rollable.flight.RotateState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.SmoothUtil;
@@ -13,6 +15,19 @@ import java.util.Map;
 
 public class RotationModifiers {
     public static final double ROLL_REORIENT_CUTOFF = Math.sqrt(10.0 / 3.0);
+
+    public static RotateState configureRotation(RotateState rotationInstant, @SuppressWarnings("unused") RollContext context) {
+        double pitch = rotationInstant.pitch();
+        double yaw = rotationInstant.yaw();
+        double roll = rotationInstant.roll();
+        if (!RollableClientConfig.INSTANCE.generals.switchRollAndYaw.getValue()) {
+            double temp = yaw;
+            yaw = roll;
+            roll = temp;
+        }
+        if (RollableClientConfig.INSTANCE.generals.invertPitch.getValue()) pitch *= -1;
+        return new RotateState(pitch, yaw, roll);
+    }
 
     public static RollContext.ConfiguresRotation buttonControls(double power) {
         return (rotationInstant, context) -> {

@@ -36,7 +36,8 @@
   "key.rollable.pitch_up": "Pitch Up",
   "key.rollable.roll_left": "Roll Left",
   "key.rollable.roll_right": "Roll Right",
-  "key.rollable.toggle_enabled": "Toggle Enabled",
+  "key.rollable.toggle_enable_elytra": "Toggle Enable In Elytra Flying",
+  "key.rollable.toggle_enable_swimming": "Toggle Enable In Swimming",
   "key.rollable.yaw_left": "Yaw Left",
   "key.rollable.yaw_right": "Yaw Right"
 }
