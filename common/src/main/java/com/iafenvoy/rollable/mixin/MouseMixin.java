@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.api.RollableEntity;
 import com.iafenvoy.rollable.config.RollableClientConfig;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -51,8 +51,7 @@ public abstract class MouseMixin {
 
     @Unique
     public boolean rollable$updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY, double mouseDelta) {
-        RollEntity rollPlayer = (RollEntity) player;
-        if (rollPlayer.rollable$isRolling()) {
+        if (player instanceof RollableEntity rollable && rollable.rollable$isRolling()) {
             if (RollableClientConfig.INSTANCE.generals.momentumBasedMouse.getValue()) {
                 // add the mouse movement to the current vector and normalize if needed
                 this.rollable$mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
@@ -63,12 +62,11 @@ public abstract class MouseMixin {
                 if (readyTurnVec.lengthSquared() < deadzone * deadzone) readyTurnVec.zero();
                 // enlarge the vector and apply it to the camera
                 readyTurnVec.mul(1200 * (float) mouseDelta);
-                rollPlayer.rollable$changeLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
-
+                rollable.rollable$changeLook(readyTurnVec.y, readyTurnVec.x, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             } else {
                 // if we are not using a momentum based mouse, we can reset it and apply the values directly
                 this.rollable$mouseTurnVec.zero();
-                rollPlayer.rollable$changeLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
+                rollable.rollable$changeLook(cursorDeltaY, cursorDeltaX, 0, RollableClientConfig.INSTANCE.sensitivity.desktop.getValue(), mouseDelta);
             }
             return true;
         }

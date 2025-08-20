@@ -1,7 +1,7 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.api.RollCamera;
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.api.RollableCamera;
+import com.iafenvoy.rollable.api.RollableEntity;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Camera.class)
-public abstract class CameraMixin implements RollCamera {
+public abstract class CameraMixin implements RollableCamera {
     @Shadow
     private Entity focusedEntity;
     @Unique
@@ -37,7 +37,7 @@ public abstract class CameraMixin implements RollCamera {
 
     @Inject(method = "updateEyeHeight", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/Camera;cameraY:F", ordinal = 0))
     private void rollable$interpolateRollnt(CallbackInfo ci) {
-        if (!((RollEntity) this.focusedEntity).rollable$isRolling()) {
+        if (this.focusedEntity instanceof RollableEntity rollable && !rollable.rollable$isRolling()) {
             this.rollable$lastRollBack = this.rollable$rollBack;
             this.rollable$rollBack -= this.rollable$rollBack * 0.5f;
         }
@@ -46,7 +46,7 @@ public abstract class CameraMixin implements RollCamera {
     @Inject(method = "update", at = @At("HEAD"))
     private void rollable$captureTickDeltaAndUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         tickDeltaRef.set(tickDelta);
-        this.rollable$isRolling = ((RollEntity) focusedEntity).rollable$isRolling();
+        this.rollable$isRolling = focusedEntity instanceof RollableEntity rollable && rollable.rollable$isRolling();
     }
 
     @Inject(method = "update", at = @At("TAIL"))
@@ -59,10 +59,11 @@ public abstract class CameraMixin implements RollCamera {
 
     @WrapWithCondition(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;setRotation(FF)V", ordinal = 0))
     private boolean rollable$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
-        if (this.rollable$isRolling)
-            this.rollable$tempRoll.set(((RollEntity) this.focusedEntity).rollable$getRoll(tickDelta.get()));
-        else
-            this.rollable$tempRoll.set(MathHelper.lerp(tickDelta.get(), this.rollable$lastRollBack, this.rollable$rollBack));
+        if (this.focusedEntity instanceof RollableEntity rollable)
+            if (this.rollable$isRolling)
+                this.rollable$tempRoll.set(rollable.rollable$getRoll(tickDelta.get()));
+            else
+                this.rollable$tempRoll.set(MathHelper.lerp(tickDelta.get(), this.rollable$lastRollBack, this.rollable$rollBack));
         return true;
     }
 

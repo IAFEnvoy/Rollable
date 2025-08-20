@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.api.RollCamera;
+import com.iafenvoy.rollable.api.RollableCamera;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Camera;
@@ -23,6 +23,7 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 2))
     public void rollable$renderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-        matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(((RollCamera) this.camera).rollable$getRoll()));
+        if (this.camera instanceof RollableCamera rollable)
+            matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rollable.rollable$getRoll()));
     }
 }

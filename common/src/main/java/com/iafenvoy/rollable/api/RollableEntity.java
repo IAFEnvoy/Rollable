@@ -4,7 +4,7 @@ import com.iafenvoy.rollable.flight.RollProcessGroup;
 import com.iafenvoy.rollable.flight.RotateState;
 import org.jetbrains.annotations.Nullable;
 
-public interface RollEntity {
+public interface RollableEntity {
     void rollable$changeLook(double pitch, double yaw, double roll, RotateState state, double mouseDelta);
 
     void rollable$changeLook(float pitch, float yaw, float roll);

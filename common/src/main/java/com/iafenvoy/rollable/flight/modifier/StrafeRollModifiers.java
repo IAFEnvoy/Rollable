@@ -12,9 +12,10 @@ public class StrafeRollModifiers {
     public static final SmoothUtil STRAFE_ROLL_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil STRAFE_YAW_SMOOTHER = new SmoothUtil();
 
-    public static RotateState applyStrafeRoll(RotateState rotationInstant, RollContext context) {
+    public static RotateState applyStrafeRoll(RotateState state, RollContext context) {
+        if (!RollableClientConfig.INSTANCE.swim.smoothingEnabled.getValue()) return state;
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player == null) return rotationInstant;
+        if (player == null) return state;
 
         GameOptions options = MinecraftClient.getInstance().options;
         double rollDelta = 0;
@@ -33,6 +34,6 @@ public class StrafeRollModifiers {
             yawDelta = STRAFE_YAW_SMOOTHER.smooth(yawDelta, 1 / RollableClientConfig.INSTANCE.swim.values.getValue().yaw() * context.getRenderDelta());
         }
 
-        return rotationInstant.add(0, yawDelta, rollDelta);
+        return state.add(0, yawDelta, rollDelta);
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin.compat;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.api.RollableEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class CameraSystemMixin {
     @Unique
     private boolean rollable$allowModifications() {
-        return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollEntity rollEntity && rollEntity.rollable$isRolling());
+        return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollableEntity rollable && rollable.rollable$isRolling());
     }
 
     @Dynamic

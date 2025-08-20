@@ -1,5 +1,5 @@
 package com.iafenvoy.rollable.api;
 
-public interface RollCamera {
+public interface RollableCamera {
     float rollable$getRoll();
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.rollable.mixin;
 
-import com.iafenvoy.rollable.api.RollEntity;
+import com.iafenvoy.rollable.api.RollableEntity;
 import com.iafenvoy.rollable.flight.RollContext;
 import com.iafenvoy.rollable.flight.RollProcessGroup;
 import com.iafenvoy.rollable.flight.RotateState;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends PlayerEntity implements RollEntity {
+public abstract class ClientPlayerEntityMixin extends PlayerEntity implements RollableEntity {
     @Shadow
     public float renderYaw;
     @Shadow

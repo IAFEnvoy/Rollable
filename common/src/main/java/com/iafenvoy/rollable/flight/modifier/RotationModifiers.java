@@ -16,10 +16,10 @@ import java.util.Map;
 public class RotationModifiers {
     public static final double ROLL_REORIENT_CUTOFF = Math.sqrt(10.0 / 3.0);
 
-    public static RotateState configureRotation(RotateState rotationInstant, @SuppressWarnings("unused") RollContext context) {
-        double pitch = rotationInstant.pitch();
-        double yaw = rotationInstant.yaw();
-        double roll = rotationInstant.roll();
+    public static RotateState configureRotation(RotateState state, @SuppressWarnings("unused") RollContext context) {
+        double pitch = state.pitch();
+        double yaw = state.yaw();
+        double roll = state.roll();
         if (!RollableClientConfig.INSTANCE.generals.switchRollAndYaw.getValue()) {
             double temp = yaw;
             yaw = roll;
@@ -30,7 +30,7 @@ public class RotationModifiers {
     }
 
     public static RollContext.ConfiguresRotation buttonControls(double power) {
-        return (rotationInstant, context) -> {
+        return (state, context) -> {
             double delta = power * context.getRenderDelta(), pitch = 0, yaw = 0, roll = 0;
             if (RollableKeybindings.PITCH_UP.isPressed()) pitch -= delta;
             if (RollableKeybindings.PITCH_DOWN.isPressed()) pitch += delta;
@@ -38,18 +38,18 @@ public class RotationModifiers {
             if (RollableKeybindings.YAW_RIGHT.isPressed()) yaw += delta;
             if (RollableKeybindings.ROLL_LEFT.isPressed()) roll -= delta;
             if (RollableKeybindings.ROLL_RIGHT.isPressed()) roll += delta;
-            return rotationInstant.add(pitch, yaw, roll);
+            return state.add(pitch, yaw, roll);
         };
     }
 
     public static RollContext.ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, RotateState smoothness) {
-        return (rotationInstant, context) -> new RotateState(
-                smoothness.pitch() == 0 ? rotationInstant.pitch() : pitchSmoother.smooth(rotationInstant.pitch(), 1 / smoothness.pitch() * context.getRenderDelta()),
-                smoothness.yaw() == 0 ? rotationInstant.yaw() : yawSmoother.smooth(rotationInstant.yaw(), 1 / smoothness.yaw() * context.getRenderDelta()),
-                smoothness.roll() == 0 ? rotationInstant.roll() : rollSmoother.smooth(rotationInstant.roll(), 1 / smoothness.roll() * context.getRenderDelta()));
+        return (state, context) -> new RotateState(
+                smoothness.pitch() == 0 ? state.pitch() : pitchSmoother.smooth(state.pitch(), 1 / smoothness.pitch() * context.getRenderDelta()),
+                smoothness.yaw() == 0 ? state.yaw() : yawSmoother.smooth(state.yaw(), 1 / smoothness.yaw() * context.getRenderDelta()),
+                smoothness.roll() == 0 ? state.roll() : rollSmoother.smooth(state.roll(), 1 / smoothness.roll() * context.getRenderDelta()));
     }
 
-    public static RotateState banking(RotateState rotationInstant, RollContext context) {
+    public static RotateState banking(RotateState state, RollContext context) {
         double delta = context.getRenderDelta();
         RotateState currentRotation = context.getCurrentRotation();
         double currentRoll = Math.toRadians(currentRotation.roll());
@@ -67,25 +67,25 @@ public class RotationModifiers {
         if (Double.isNaN(dX)) dX = 0;
         if (Double.isNaN(dY)) dY = 0;
 
-        return rotationInstant.addAbsolute(dX * delta, dY * delta, currentRoll);
+        return state.addAbsolute(dX * delta, dY * delta, currentRoll);
     }
 
-    public static RotateState reorient(RotateState rotationInstant, RollContext context) {
+    public static RotateState reorient(RotateState state, RollContext context) {
         double delta = context.getRenderDelta();
         double currentRoll = Math.toRadians(context.getCurrentRotation().roll());
         double strength = 10 * RollableClientConfig.INSTANCE.banking.rightingStrength.getValue();
         double cutoff = ROLL_REORIENT_CUTOFF;
         double rollDelta = 0;
         if (-cutoff < currentRoll && currentRoll < cutoff) rollDelta = -Math.pow(currentRoll, 3) / 3.0 + currentRoll;
-        return rotationInstant.add(0, 0, -rollDelta * strength * delta);
+        return state.add(0, 0, -rollDelta * strength * delta);
     }
 
-    public static RotateState applyControlSurfaceEfficacy(RotateState rotationInstant, RollContext context) {
+    public static RotateState applyControlSurfaceEfficacy(RotateState state, RollContext context) {
         Expression elevatorExpression = RollableClientConfig.INSTANCE.advanced.elevatorEfficacyFormula.getValue().getCompiledOrDefaulting(1);
         Expression aileronExpression = RollableClientConfig.INSTANCE.advanced.aileronEfficacyFormula.getValue().getCompiledOrDefaulting(1);
         Expression rudderExpression = RollableClientConfig.INSTANCE.advanced.rudderEfficacyFormula.getValue().getCompiledOrDefaulting(1);
         Map<String, Double> vars = getVars(context);
-        return rotationInstant.multiply(elevatorExpression.eval(vars), rudderExpression.eval(vars), aileronExpression.eval(vars));
+        return state.multiply(elevatorExpression.eval(vars), rudderExpression.eval(vars), aileronExpression.eval(vars));
     }
 
     private static Map<String, Double> getVars(RollContext context) {
