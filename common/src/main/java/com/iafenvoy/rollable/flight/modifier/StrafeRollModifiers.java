@@ -30,8 +30,8 @@ public class StrafeRollModifiers {
         }
 
         if (RollableClientConfig.INSTANCE.swim.strafeSmoothingEnabled.getValue()) {
-            rollDelta = STRAFE_ROLL_SMOOTHER.smooth(rollDelta, 1 / RollableClientConfig.INSTANCE.swim.values.getValue().roll() * context.getRenderDelta());
-            yawDelta = STRAFE_YAW_SMOOTHER.smooth(yawDelta, 1 / RollableClientConfig.INSTANCE.swim.values.getValue().yaw() * context.getRenderDelta());
+            rollDelta = STRAFE_ROLL_SMOOTHER.smooth(rollDelta, 1 / RollableClientConfig.INSTANCE.swim.smoothingValues.getValue().roll() * context.getRenderDelta());
+            yawDelta = STRAFE_YAW_SMOOTHER.smooth(yawDelta, 1 / RollableClientConfig.INSTANCE.swim.smoothingValues.getValue().yaw() * context.getRenderDelta());
         }
 
         return state.add(0, yawDelta, rollDelta);

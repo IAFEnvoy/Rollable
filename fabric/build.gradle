@@ -38,7 +38,7 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    modImplementation "maven.modrinth:flightassistant:C66m20Nf"
+    modCompileOnly "maven.modrinth:flightassistant:C66m20Nf"
     modCompileOnly("dev.isxander:controlify:${project.controlify_version}") {
         exclude group: "net.fabricmc"
         exclude group: "maven.modrinth"

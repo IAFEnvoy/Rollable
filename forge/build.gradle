@@ -43,7 +43,7 @@ dependencies {
 
     modImplementation "maven.modrinth:jupiter:ZmYt4jjp"
 
-    modImplementation "maven.modrinth:flightassistant:xfgfisIh"
+    modCompileOnly "maven.modrinth:flightassistant:xfgfisIh"
 }
 
 processResources {

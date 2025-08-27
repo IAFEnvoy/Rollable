@@ -50,7 +50,7 @@ public class RollableClientConfig extends AutoInitConfigContainer {
         public final IConfigEntry<Double> strafeYawStrength = new DoubleEntry(format("swim", "strafeYawStrength"), 1, 0, Integer.MAX_VALUE).json("strafeYawStrength");
         public final IConfigEntry<Boolean> smoothingEnabled = new BooleanEntry(format("swim", "smoothingEnabled"), true).json("smoothingEnabled");
         public final IConfigEntry<Boolean> strafeSmoothingEnabled = new BooleanEntry(format("swim", "strafeSmoothingEnabled"), true).json("strafeSmoothingEnabled");
-        public final IConfigEntry<RotateState> values = new RotateStateEntry(format("swim", "values"), .5, .5, .5).json("values");
+        public final IConfigEntry<RotateState> smoothingValues = new RotateStateEntry(format("swim", "smoothingValues"), .5, .5, .5).json("smoothingValues");
 
         public Swim() {
             super("swim", format("swim", "title"));

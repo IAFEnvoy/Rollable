@@ -33,7 +33,7 @@ public class ClientEvents {
         SWIMMING_GROUP.registerEnablePredicate(ClientEvents::isSwimming);
         SWIMMING_GROUP.registerBeforeModifier(context -> context.useModifier(StrafeRollModifiers::applyStrafeRoll));
         SWIMMING_GROUP.registerBeforeModifier(context -> context.useModifier(RotationModifiers::configureRotation));
-        SWIMMING_GROUP.registerAfterModifier(context -> context.useModifier(SWIMMING.smoothing(RollableClientConfig.INSTANCE.swim.values.getValue())));
+        SWIMMING_GROUP.registerAfterModifier(context -> context.useModifier(SWIMMING.smoothing(RollableClientConfig.INSTANCE.swim.smoothingValues.getValue())));
 
     }
 
