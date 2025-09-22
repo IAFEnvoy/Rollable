@@ -2,6 +2,7 @@ package com.iafenvoy.rollable;
 
 import com.iafenvoy.jupiter.render.screen.ClientConfigScreen;
 import com.iafenvoy.rollable.config.RollableClientConfig;
+import com.iafenvoy.rollable.mixin.KeyBindingAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -39,6 +40,35 @@ public class RollableKeybindings {
             ROLL_RIGHT
     );
 
+    public static boolean isPitchUpPressed() {
+        return isPressedGlobally(PITCH_UP);
+    }
+
+    public static boolean isPitchDownPressed() {
+        return isPressedGlobally(PITCH_DOWN);
+    }
+
+    public static boolean isYawLeftPressed() {
+        return isPressedGlobally(YAW_LEFT);
+    }
+
+    public static boolean isYawRightPressed() {
+        return isPressedGlobally(YAW_RIGHT);
+    }
+
+    public static boolean isRollLeftPressed() {
+        return isPressedGlobally(ROLL_LEFT);
+    }
+
+    public static boolean isRollRightPressed() {
+        return isPressedGlobally(ROLL_RIGHT);
+    }
+
+    private static boolean isPressedGlobally(KeyBinding keyBinding) {
+        InputUtil.Key key = ((KeyBindingAccessor) keyBinding).getBoundKey();
+        return key != InputUtil.UNKNOWN_KEY && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), key.getCode());
+    }
+
     public static void clientTick(MinecraftClient client) {
         while (OPEN_CONFIG.wasPressed())
             client.setScreen(new ClientConfigScreen(client.currentScreen, RollableClientConfig.INSTANCE));
@@ -49,6 +79,7 @@ public class RollableKeybindings {
             if (client.player != null)
                 client.player.sendMessage(Text.translatable("key.%s.%s".formatted(Rollable.MOD_ID, b ? "toggle_enabled.enable" : "toggle_enabled.disable")), true);
         }
+
         while (TOGGLE_ENABLE_SWIMMING.wasPressed()) {
             boolean enable = !RollableClientConfig.INSTANCE.swim.enabled.getValue();
             RollableClientConfig.INSTANCE.swim.enabled.setValue(enable);

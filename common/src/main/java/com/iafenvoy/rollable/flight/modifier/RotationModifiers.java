@@ -32,12 +32,12 @@ public class RotationModifiers {
     public static RollContext.ConfiguresRotation buttonControls(double power) {
         return (state, context) -> {
             double delta = power * context.getRenderDelta(), pitch = 0, yaw = 0, roll = 0;
-            if (RollableKeybindings.PITCH_UP.isPressed()) pitch -= delta;
-            if (RollableKeybindings.PITCH_DOWN.isPressed()) pitch += delta;
-            if (RollableKeybindings.YAW_LEFT.isPressed()) yaw -= delta;
-            if (RollableKeybindings.YAW_RIGHT.isPressed()) yaw += delta;
-            if (RollableKeybindings.ROLL_LEFT.isPressed()) roll -= delta;
-            if (RollableKeybindings.ROLL_RIGHT.isPressed()) roll += delta;
+            if (RollableKeybindings.isPitchUpPressed()) pitch -= delta;
+            if (RollableKeybindings.isPitchDownPressed()) pitch += delta;
+            if (RollableKeybindings.isYawLeftPressed()) yaw -= delta;
+            if (RollableKeybindings.isYawRightPressed()) yaw += delta;
+            if (RollableKeybindings.isRollLeftPressed()) roll -= delta;
+            if (RollableKeybindings.isRollRightPressed()) roll += delta;
             return state.add(pitch, yaw, roll);
         };
     }
