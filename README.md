@@ -6,8 +6,6 @@ optimize the GUI and flying logic.
 
 Configure in mod menu or use the `open config` hotkey.
 
-Down to 1.16.5 will be ported after fully tested.
-
 ## Features
 
 - You can make elytra flies like flying a plane.
